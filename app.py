@@ -43,7 +43,9 @@ with st.beta_expander("Processed Dataframe"):
     add_info = st.checkbox("Whether to add module information?",help="Module information is inclusive of module faculty, module level, etc.")
     if add_info:
       analyzer.integrate_module_information()
-      st.dataframe(analyzer.mod_info)
+      mod_info = analyzer.mod_info.reset_index()
+      st.dataframe(mod_info)
+      mod_info = None
   fig = analyzer.plot_popular_modules()
   st.plotly_chart(fig, use_container_width=True)
 
@@ -93,6 +95,7 @@ with st.beta_expander("Principal component analysis"):
   
   st.subheader("Dataframe Results:")
   st.dataframe(mod_pc_diff)
+  mod_pc_diff = None
   
   st.subheader("Plot the top "+str(n_mods)+" most different modules:")
   st.plotly_chart(fig, use_container_width=True)
@@ -107,6 +110,7 @@ with st.beta_expander("Attribute percentage analysis"):
     
 #   st.subheader("Dataframe Results:")
 #   st.dataframe(mod_attr_perc_change)
+#   mod_attr_perc_change = None
   
   st.subheader("Plot the percentage difference for {}:".format(attr))
   st.plotly_chart(fig, use_container_width=True)  
