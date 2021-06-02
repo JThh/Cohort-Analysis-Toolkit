@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd 
 import matplotlib.pyplot as plt
 
-from utils import CohortAnalyzer, ExcelDataReader
+from utils import CohortAnalyzer#, ExcelDataReader
 
 #############
 PATH = 'biz_module_selection.csv'
