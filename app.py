@@ -72,6 +72,9 @@ with st.beta_expander("Module enrolment difference analysis"):
     analyzer.get_most_different_modules()
     analyzer.plot_topk_diff_mod_info(k=10)
    
+  fig = analyzer.plot_topk_diff_mod_info()
+  st.plotly_chart(fig, use_container_width=True)
+   
   
 
                                             
