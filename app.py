@@ -49,8 +49,21 @@ with st.beta_expander("Statistical Analysis"):
   st.markdown('Conduct statistical tests to check whether there are significant differences betweent the cohorts.')
   with st.echo():
     analyzer.stata_analysis()
+  t_sta_ttest, p_val_ttest, t_sta_oneway, p_val_oneway = analyzer.stata_analysis()
   
+  st.write("Results from t test: t-statistics:",t_sta_ttest,'p value:',p_val_ttest)
+  if p_val_ttest < 0.05:
+    st.write("Thus, their means are significantly different.")
+  else:
+    st.write("Thus, there is no significant difference between their means")
+    
+  st.write("Results from ANOVA test: t-statistics:",t_sta_oneway,'p value:',p_val_oneway)
   
+  if p_val_oneway < 0.05:
+    st.write("Thus, their variances are significantly different.")
+  else:
+    st.write("Thus, there is no significant difference between their variances")
+    
   
 
 
