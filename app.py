@@ -13,7 +13,7 @@ st.title('Cohort Analysis of Module Selection Pattern')
 
 st.sidebar.title('Dashboard Demo')
 with st.sidebar.beta_expander("Notes to take"):
-  st.sidebar.markdown("""
+  st.markdown("""
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
                       2. The app is updated and functional until 2nd June;
                       3. The source code is openly shared under MIT license.
