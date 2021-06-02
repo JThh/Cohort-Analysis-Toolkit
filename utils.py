@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 #import xlwings as xw
 
+################   GLOBAL VARIABLES   ################
 ACADEMIC_YEARS = [10+x for x in range(9)]
+######################################################
 
 # class ExcelDataReader():
 #     def __init__(self, path, sheet_name, range_from, range_to, index=False, header=True):
@@ -29,14 +31,23 @@ ACADEMIC_YEARS = [10+x for x in range(9)]
 
     
 class CohortAnalyzer():
-    def __init__(self, mod_enrol, coht1, coht2):
+    def __init__(self, mod_enrol, student_program, coht1, coht2):
         self.coht1 = 'Cohort'+str(coht1)
         self.coht2 = 'Cohort'+str(coht2)
         assert coht1 in ACADEMIC_YEARS and coht2 in ACADEMIC_YEARS
         
+        student_program.drop_duplicates(subset=['student_token'], inplace=True)
         self.mod_enrol = mod_enrol
-        self.ds_coht1 = mod_enrol[[int(x/100) == coht1 for x in mod_enrol.term]]
-        self.ds_coht2 = mod_enrol[[int(x/100) == coht2 for x in mod_enrol.term]]
+
+        # Make sure the modules are selected only by year1 undergrad students.
+        def validate_student(student, coht):
+            if int(student.admit_term/100) == coht and student.academic_career == 'UGRD':
+                return True
+            else:
+                return False
+            
+        self.ds_coht1 = mod_enrol[[int(x/100) == coht1 for x in mod_enrol.term] & [validate_student(student_program.query('student_token==%x'),coht1) for x in mod_enrol.student_token]]
+        self.ds_coht2 = mod_enrol[[int(x/100) == coht2 for x in mod_enrol.term] & [validate_student(student_program.query('student_token==%x'),coht2) for x in mod_enrol.student_token]]
 
         self.ds_coht1['count'] = 1
         self.ds_coht2['count'] = 1
@@ -54,6 +65,8 @@ class CohortAnalyzer():
         from streamlit import caching
         caching.clear_cache()
 
+    def get_student_and_module_count(self):
+        return self.ds_coht1.student_token.nunique(), self.ds_coht2.student_token.nunique(), self.ds_coht1.mod_code.nunique(), self.ds_coht2.mod_code.nunique()
     
     @property
     def _mod_agg(self):
