@@ -218,7 +218,7 @@ class CohortAnalyzer():
 
         mod_diff_svd_info['color'] = np.where(mod_diff_svd_info.pc_diff > 0,'blue','red')
         fig = px.bar(mod_diff_svd_info.iloc[:topkmods,:], x='index', y='pc_diff',color='color',hover_data=['mod_code','grading_basis','mod_faculty'])
-        return fig     
+        return mod_diff_svd_info, fig     
         #print("It is advised to clear the cache each time after running a graphing function!")
 
     def attr_perc_change(self, attr='mod_faculty'):
