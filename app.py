@@ -5,14 +5,9 @@ import matplotlib.pyplot as plt
 
 from utils import CohortAnalyzer, ExcelDataReader
 
-########
-##Not revealed: temporary parameters
-PATH = 'biz.xlsx'
-SHEET_NAME = 'module_enrolment'
-RANGE_FROM = 'B1'
-RANGE_TO = 'P30065'
-########
-
+#############
+PATH = 'biz_module_selection.csv'
+#############
 
 st.title('Cohort Analysis of Module Selection Pattern')
 
@@ -21,7 +16,7 @@ st.sidebar('Dashboard for illustration (not yet finished)')
 faculty = st.selectbox('Select a faculty to explore',('Business','Soc','FASS'))
 st.write('You selected',faculty)
 
-module = ExcelDataReader(PATH, SHEET_NAME, RANGE_FROM, RANGE_TO).dataframe
+module = pd.read_csv(PATH)
 
 cohort1 = st.number_input('Select a cohort to compare')
 st.write(cohort1,'selected')
