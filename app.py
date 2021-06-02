@@ -13,7 +13,7 @@ st.title('Cohort Analysis of Module Selection Pattern')
 
 st.sidebar.title('Dashboard for illustration (not yet finished)')
 
-faculty = st.selectbox('Select a faculty to explore',('Business','Soc','FASS'))
+faculty = st.selectbox('Select a faculty to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'))
 st.write('You selected',faculty)
 
 module = pd.read_csv(PATH)
@@ -29,8 +29,11 @@ with col2:
   st.write(cohort2,'selected')
 
 analyzer = CohortAnalyzer(module, cohort1, cohort2)
+st.write('Cohort Analyzer installed and ready.')
 
-
+#with st.beta_expander("Statistical Analysis"):
+  
+  
 
 
                                             
