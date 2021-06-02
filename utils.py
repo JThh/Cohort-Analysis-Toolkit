@@ -193,7 +193,7 @@ class CohortAnalyzer():
     def PCAnalysis(self, n_components=5, n_iters=7, random_state=47, topkmods=10):
         stu_mod_1 = self.ds_coht1[['student_token','mod_code']].drop_duplicates().groupby(['student_token']).agg(list).reset_index()
         stu_mod_2 = self.ds_coht2[['student_token','mod_code']].drop_duplicates().groupby(['student_token']).agg(list).reset_index()
-        student_set = set(stu_mod_1.student_token).intersection(set(stu_mod_2.student_token))
+        #student_set = set(stu_mod_1.student_token).intersection(set(stu_mod_2.student_token))
         module_set = list(set(self.ds_coht1.mod_code).union(set(self.ds_coht2.mod_code)))
 
         stu_mod_vec_1 = list()
@@ -202,19 +202,17 @@ class CohortAnalyzer():
         n_mod_list = len(module_set)
 
         for row in stu_mod_1.iterrows():
-            if row[1].student_token in student_set:
-                vec = [0] * n_mod_list
-                for mod in row[1].mod_code:
-                    vec[module_set.index(mod)] = 1
-                stu_mod_vec_1.append(vec)
+            vec = [0] * n_mod_list
+            for mod in row[1].mod_code:
+                vec[module_set.index(mod)] = 1
+            stu_mod_vec_1.append(vec)
 
         for row in stu_mod_2.iterrows():
-            if row[1].student_token in student_set:
-                vec = [0] * n_mod_list
-                for mod in row[1].mod_code:
-                    vec[module_set.index(mod)] = 1
-                stu_mod_vec_2.append(vec)
-        
+            vec = [0] * n_mod_list
+            for mod in row[1].mod_code:
+                vec[module_set.index(mod)] = 1
+            stu_mod_vec_2.append(vec)
+
         from sklearn.decomposition import TruncatedSVD
 
         svd1 = TruncatedSVD(n_components=n_components, n_iter=n_iters, random_state=random_state)
