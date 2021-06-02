@@ -102,7 +102,7 @@ with st.beta_expander("Principal component analysis"):
   
   
 with st.beta_expander("Attribute percentage analysis"):
-  attr = st.selectbox('Select an attribute to explore',('grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level'))
+  attr = st.selectbox('Select an attribute to explore',('grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level'),index=1)
   st.write('You selected',attr)
   
   with st.echo():
