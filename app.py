@@ -56,7 +56,7 @@ with st.beta_expander("Processed Dataframe"):
 
   with col2:
     st.subheader("Module information data")
-    add_info = st.checkbox("Whether to add module information?",help="Module information is inclusive of module faculty, module level, etc.")
+    add_info = st.checkbox("Whether to integrate module information?",help="Module information is inclusive of module faculty, module level, etc.")
     if add_info:
       analyzer.integrate_module_information()
       mod_info = analyzer.mod_info.reset_index()
