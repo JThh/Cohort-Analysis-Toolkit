@@ -21,13 +21,13 @@ st.sidebar.header('Dashboard Demo')
 # image = Image.open(IMAGE_PATH)
 # st.sidebar.image(image, )
 
-with st.sidebar.beta_expander("Notices"):
+with st.sidebar.beta_expander("Cautions"):
   st.markdown("""
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
                       2. The app is updated and functional until 2nd June;
                       3. The source code is openly shared under MIT license.
                       """)
-st.sidebar.markdown("""_v1.0.0 | June 2021_""".format(unsafe_allow_html=True))
+st.sidebar.markdown("""_Version 1.0.0 | June 2021_""".format(unsafe_allow_html=True))
  
   
 
