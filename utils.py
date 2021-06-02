@@ -6,6 +6,10 @@ import seaborn as sns
 
 ################   GLOBAL VARIABLES   ################
 ACADEMIC_YEARS = [10+x for x in range(9)]
+EMROLMENT_ATTRIBUTES = ['student_token', 'term', 'academic_career', 'mod_code', 'mod_name',
+       'grading_basis', 'mod_faculty',
+       'mod_department', 'mod_activity_type', 'mod_level']
+STUDENT_ATTRIBUTES = ['student_token', 'term', 'academic_career', 'admit_term']
 ######################################################
 
 # class ExcelDataReader():
@@ -36,18 +40,18 @@ class CohortAnalyzer():
         self.coht2 = 'Cohort'+str(coht2)
         assert coht1 in ACADEMIC_YEARS and coht2 in ACADEMIC_YEARS
         
-        student_program.drop_duplicates(subset=['student_token'], inplace=True)
+        for attr in EMROLMENT_ATTRIBUTES:
+            assert attr in mod_enrol.columns
+        
+        for attr in STUDENT_ATTRIBUTES:
+            assert attr in student_program.columns
+        
         self.mod_enrol = mod_enrol
+        mod_stu_cross = mod_enrol.merge(student_program.drop(['term','academic_career'],axis=1).drop_duplicates(subset=['student_token']), on="student_token", how='left')
 
-        # Make sure the modules are selected only by year1 undergrad students.
-        def validate_student(student, coht):
-            if int(student.iloc[0,:].admit_term/100) == coht and student.iloc[0,:].academic_career == 'UGRD':
-                return True
-            else:
-                return False
             
-        self.ds_coht1 = mod_enrol[[int(x/100) == coht1 for x in mod_enrol.term] and [validate_student(student_program[student_program.student_token==x],coht1) for x in mod_enrol.student_token]]
-        self.ds_coht2 = mod_enrol[[int(x/100) == coht2 for x in mod_enrol.term] and [validate_student(student_program[student_program.student_token==x],coht2) for x in mod_enrol.student_token]]
+        self.ds_coht1 = mod_enrol[[int(row.term/100) == int(row.admit_term/100) == coht1 and row.academic_career == 'UGRD' for row in mod_stu_cross.itertuples()]]
+        self.ds_coht2 = mod_enrol[[int(row.term/100) == int(row.admit_term/100) == coht2 and row.academic_career == 'UGRD' for row in mod_stu_cross.itertuples()]]
 
         self.ds_coht1['count'] = 1
         self.ds_coht2['count'] = 1
