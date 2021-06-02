@@ -121,8 +121,9 @@ class CohortAnalyzer():
 
         mod_melted = pd.melt(mod_agg_sorted.iloc[:n,:].drop(['mod_code'],axis=1),id_vars='mod_code_hash')
 
-        sns.factorplot(x='mod_code_hash',y='value',hue='variable',data=mod_melted,kind='bar')
-        plt.show()
+        import plotly.express as px
+        fig = px.bar(mod_melted, x='mod_code_hash', y='value', color='variable',barmode='group')
+        return fig
         #print("It is advised to clear the cache each time after running a graphing function!")
 
     def get_most_different_modules(self, n=10):
