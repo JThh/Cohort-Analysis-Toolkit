@@ -25,13 +25,28 @@ with col1:
   st.write(cohort1,'selected')
 
 with col2:
-  cohort2 = st.number_input('Select another cohort to compare with cohort1',min_value=cohort1,max_value=18,help='preferably larger than'+str(cohort1))
+  cohort2 = st.number_input('Select another cohort to compare with cohort1',min_value=cohort1+1,max_value=18,help='preferably larger than'+str(cohort1))
   st.write(cohort2,'selected')
 
 analyzer = CohortAnalyzer(module, cohort1, cohort2)
 st.write('Cohort Analyzer installed and ready.')
 
-#with st.beta_expander("Statistical Analysis"):
+with st.beta_expander("Processed Dataframe"):
+  col1, col2 = st.beta_columns(2)
+
+  with col1:
+    st.subheader("Module enrolment data")
+    st.dataframe(analyzer.mod_agg)
+
+  with col2:
+    st.subheader("Module information data")
+    add_info = st.checkbox("Whether to add module information?",help="Module information is inclusive of module faculty, module level, etc.")
+    if add_info:
+      analyzer.integrate_module_information()
+      st.dataframe(analyzer.mod_info)
+
+with st.beta_expander("Statistical Analysis"):
+  
   
   
 
