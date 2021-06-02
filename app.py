@@ -88,7 +88,7 @@ with st.beta_expander("Principal component analysis"):
     n_mods = st.number_input("Number of modules to show in graph: (Default 10)", min_value=5, max_value=15, help="Top N most different modules")
   
   with st.echo():
-    mod_pc_diff, fig = analyzer.PCAnalysis(n_components=n_components, topkmods="n_mods")
+    mod_pc_diff, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=n_mods)
   
   st.subheader("Dataframe Results:")
   st.dataframe(mod_pc_diff)
