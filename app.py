@@ -96,9 +96,11 @@ with st.beta_expander("Statistical Analysis"):
 
 with st.beta_expander("Module enrolment difference analysis"):
   st.markdown('Modules are sorted based on their enrolment differences in descending order.')
+  n_mods = st.number_input('Top k modules to show on the graph',min_value=5, max_value=20, value=10)
+  st.write('Top',n_mods,'modules are to be shown')
   with st.echo():
     analyzer.get_most_different_modules()
-    analyzer.plot_topk_diff_mod_info(k=10)
+    analyzer.plot_topk_diff_mod_info(k=n_mods)
    
   fig = analyzer.plot_topk_diff_mod_info()
   st.plotly_chart(fig, use_container_width=True)
