@@ -91,17 +91,17 @@ class CohortAnalyzer():
         from scipy.stats import ttest_ind, f_oneway
         print('Running t-test')
         t_sta, p_value = ttest_ind(self.mod_agg[self.coht1],self.mod_agg[self.coht2])
-        print('t test result: t-statistics:',t-sta,',p value:',p_value)
+        print('t test result: t-statistics:',t_sta,',p value:',p_value)
         if p_value < 0.05:
-            print("There is significant difference in the mean student enrolments between two cohorts. And the p-value for t test is",p_value)
+            print("There is significant difference in the mean student enrolments between two cohorts.")
         else:
             print("There isn't significant difference in the mean student enrolments between two cohorts.")
 
         print('Running one-way anova test')
         t_sta, p_value = f_oneway(self.mod_agg[self.coht1],self.mod_agg[self.coht2])
-        print('ANOVA test result: t-statistics:',t-sta,',p value:',p_value)
+        print('ANOVA test result: t-statistics:',t_sta,',p value:',p_value)
         if p_value < 0.05:
-            print("There is significant difference in the selection variances between two cohorts. And the p-value for anova test is",p_value)
+            print("There is significant difference in the selection variances between two cohorts.")
         else:
             print("There isn't significant difference in the selection variances between two cohorts.")
 
