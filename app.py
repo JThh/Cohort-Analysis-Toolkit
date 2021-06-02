@@ -12,7 +12,7 @@ PATH = 'biz_module_selection.csv'
 st.title('Cohort Analysis of Module Selection Pattern')
 
 st.sidebar.title('Dashboard Demo')
-with st.side_bar.beta_expander("Notes to take"):
+with st.sidebar.beta_expander("Notes to take"):
   st.sidebar.markdown("""
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
                       2. The app is updated and functional until 2nd June;
