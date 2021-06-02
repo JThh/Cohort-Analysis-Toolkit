@@ -46,8 +46,8 @@ class CohortAnalyzer():
             else:
                 return False
             
-        self.ds_coht1 = mod_enrol[[int(x/100) == coht1 for x in mod_enrol.term] & [validate_student(student_program.query('student_token==%x'),coht1) for x in mod_enrol.student_token]]
-        self.ds_coht2 = mod_enrol[[int(x/100) == coht2 for x in mod_enrol.term] & [validate_student(student_program.query('student_token==%x'),coht2) for x in mod_enrol.student_token]]
+        self.ds_coht1 = mod_enrol[[int(x/100) == coht1 for x in mod_enrol.term] & [validate_student(student_program.query('student_token==@x'),coht1) for x in mod_enrol.student_token]]
+        self.ds_coht2 = mod_enrol[[int(x/100) == coht2 for x in mod_enrol.term] & [validate_student(student_program.query('student_token==@x'),coht2) for x in mod_enrol.student_token]]
 
         self.ds_coht1['count'] = 1
         self.ds_coht2['count'] = 1
