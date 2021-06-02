@@ -10,8 +10,11 @@ PATH = 'biz_module_selection.csv'
 #############
 
 st.title('Cohort Analysis of Module Selection Pattern')
+st.markdown('_Designed by UROP Student Han Jiatong_ | NUS WING Group')
 
-st.sidebar.title('Dashboard Demo')
+st.sidebar.header('Dashboard Demo')
+st.sidebar.subheader('- progress as at June 2nd')
+
 with st.sidebar.beta_expander("Notes to take"):
   st.markdown("""
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
