@@ -207,7 +207,7 @@ class CohortAnalyzer():
         pc_diff = np.array([0]*n_mod_list,dtype=float)
 
         for i in range(n_components):
-            pc_diff = pc_diff + (pcs_1[i] - pcs_2[i])*(n_components-i)/sum(range(1,n_components+1))
+            pc_diff = pc_diff + (pcs_2[i] - pcs_1[i])*(n_components-i)/sum(range(1,n_components+1))
 
         mod_diff_svd = pd.DataFrame({'mod_code':module_set,'pc_diff':pc_diff})
         mod_diff_svd_sorted = mod_diff_svd.iloc[mod_diff_svd.pc_diff.abs().sort_values(ascending=False).index,:]    
@@ -216,7 +216,7 @@ class CohortAnalyzer():
                 
         import plotly.express as px
 
-        mod_diff_svd_info['color'] = np.where(mod_diff_svd_info.pc_diff < 0,'blue','red')
+        mod_diff_svd_info['color'] = np.where(mod_diff_svd_info.pc_diff > 0,'blue','red')
         fig = px.bar(mod_diff_svd_info.iloc[:topkmods,:], x='index', y='pc_diff',color='color',hover_data={'color':False, 'mod_code':True})
         return mod_diff_svd_info, fig     
         #print("It is advised to clear the cache each time after running a graphing function!")
