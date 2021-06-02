@@ -51,7 +51,7 @@ st.write('Cohort Analyzer installed and ready.')
 
 with st.beta_expander("Processed Dataframe"):
   coht1_stu_count, coht2_stu_count, coht1_mod_count, coht2_mod_count = analyzer.get_student_and_module_count()
-  st.write('The total students and modules of interest are',coht1_stu_count,'students for cohort',cohort1,';',coht2_stu_count,'students for cohort',cohort2,';', coht1_mod_count,'modules for cohort',cohort1,';',coht2_mod_count,'modules for cohort',cohort2,'.')
+  st.write('The total students and modules of interest are',coht1_stu_count,'students for cohort',cohort1,',',coht2_stu_count,'students for cohort',cohort2,';', coht1_mod_count,'modules for cohort',cohort1,',',coht2_mod_count,'modules for cohort',cohort2,'.')
   col1, col2 = st.beta_columns(2)
 
   with col1:
