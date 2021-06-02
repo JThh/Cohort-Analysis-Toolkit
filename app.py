@@ -62,8 +62,10 @@ with st.beta_expander("Processed Dataframe"):
       mod_info = analyzer.mod_info.reset_index()
       st.dataframe(mod_info)
       mod_info = None
-  fig = analyzer.plot_popular_modules()
+  analyzer.integrate_module_information() # in case not called above.
+  fig = analyzer.plot_topk_popular_modules()
   st.plotly_chart(fig, use_container_width=True)
+  fig=None
 
 with st.beta_expander("Statistical Analysis"):
   st.markdown('Conduct statistical tests to check whether there are significant differences betweent the cohorts.')
@@ -89,12 +91,12 @@ with st.beta_expander("Statistical Analysis"):
 with st.beta_expander("Module enrolment difference analysis"):
   st.markdown('Modules are sorted based on their enrolment differences in descending order.')
   with st.echo():
-    analyzer.integrate_module_information() # in case not called above.
     analyzer.get_most_different_modules()
     analyzer.plot_topk_diff_mod_info(k=10)
    
   fig = analyzer.plot_topk_diff_mod_info()
   st.plotly_chart(fig, use_container_width=True)
+  fig=None
 
   
 with st.beta_expander("Principal component analysis"):
@@ -116,6 +118,7 @@ with st.beta_expander("Principal component analysis"):
   
   st.subheader("Plot the top "+str(n_mods)+" most different modules:")
   st.plotly_chart(fig, use_container_width=True)
+  fig=None
   
   
 with st.beta_expander("Attribute percentage analysis"):
@@ -131,7 +134,7 @@ with st.beta_expander("Attribute percentage analysis"):
   
   st.subheader("Plot the percentage difference for {}:".format(attr))
   st.plotly_chart(fig, use_container_width=True)  
-  
+  fig=None
 
                                             
   
