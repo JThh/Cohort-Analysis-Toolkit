@@ -67,6 +67,8 @@ with st.beta_expander("Processed Dataframe"):
       st.dataframe(mod_info)
       mod_info = None
   analyzer.integrate_module_information() # in case not called above.
+  
+  st.subheader('Most enroled modules in both cohorts')
   fig = analyzer.plot_topk_popular_modules()
   st.plotly_chart(fig, use_container_width=True)
   fig=None
