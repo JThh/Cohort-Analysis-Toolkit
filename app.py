@@ -20,7 +20,7 @@ st.sidebar.markdown('    \- progress as at June 2nd')
 # image = Image.open(IMAGE_PATH)
 # st.sidebar.image(image, )
 
-with st.sidebar.beta_expander("Notes to take"):
+with st.sidebar.beta_expander("Notices"):
   st.markdown("""
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
                       2. The app is updated and functional until 2nd June;
