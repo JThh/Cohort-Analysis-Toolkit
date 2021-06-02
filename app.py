@@ -2,18 +2,23 @@ import streamlit as st
 import numpy as np 
 import pandas as pd 
 import matplotlib.pyplot as plt
+from PIL import Image
 
 from utils import CohortAnalyzer#, ExcelDataReader
 
 #############
-PATH = 'biz_module_selection.csv'
+DATASET_PATH = 'biz_module_selection.csv'
+IMAGE_PATH = 'icon.png'
 #############
 
 st.title('Cohort Analysis of Module Selection Pattern')
 st.markdown('_Designed by UROP Student Han Jiatong_ | NUS WING Group')
 
 st.sidebar.header('Dashboard Demo')
-st.sidebar.subheader('- progress as at June 2nd')
+st.sidebar.markdown('    - progress as at June 2nd')
+
+image = Image.open(IMAGE_PATH)
+st.sidebar.image(image)
 
 with st.sidebar.beta_expander("Notes to take"):
   st.markdown("""
@@ -27,7 +32,7 @@ with st.sidebar.beta_expander("Notes to take"):
 faculty = st.selectbox('Select a faculty to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'))
 st.write('You selected',faculty)
 
-module = pd.read_csv(PATH)
+module = pd.read_csv(DATASET_PATH)
 
 col1, col2 = st.beta_columns(2)
 
