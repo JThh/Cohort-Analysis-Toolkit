@@ -150,7 +150,7 @@ class CohortAnalyzer():
         return fig
         #print("It is advised to clear the cache each time after running a graphing function!")
 
-    def get_most_different_modules(self):
+    def find_most_different_modules(self):
         '''
         Obtain the module list sorted by normalized enrolment difference between the two academic years.
         :param n: Keep top n most different modules.
