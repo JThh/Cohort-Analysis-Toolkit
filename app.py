@@ -97,7 +97,7 @@ with st.beta_expander("Statistical Analysis"):
 with st.beta_expander("Module enrolment difference analysis"):
   st.markdown('Modules are sorted based on their enrolment differences in descending order.')
   top_k = st.number_input('Top k modules',min_value=5, max_value=20, value=10, help='shown on the graph in sorted order')
-  st.write('top_k =',top_k)
+  st.write('You select',top_k)
   with st.echo():
     analyzer.find_most_different_modules() # Find the differences and sort them.
     fig = analyzer.plot_topk_diff_mod_info(k=top_k)
