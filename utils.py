@@ -234,7 +234,7 @@ class CohortAnalyzer():
         mod_focus_combined = mod_focus_grouped_1.join(mod_focus_grouped_2).reset_index()
         mod_focus_combined['enrol_percentage_cohort_1'] = (mod_focus_combined[self.coht1]) / mod_focus_combined[self.coht1].sum() * 100
         mod_focus_combined['enrol_percentage_cohort_2'] = (mod_focus_combined[self.coht2]) / mod_focus_combined[self.coht2].sum() * 100
-        mod_focus_combined['percentage_change'] = mod_focus_combined['enrol_percentage_cohort_1'] - mod_focus_combined['enrol_percentage_cohort_2']
+        mod_focus_combined['percentage_change'] = mod_focus_combined['enrol_percentage_cohort_2'] - mod_focus_combined['enrol_percentage_cohort_1']
 
         import plotly.express as px
         mod_focus_combined["color"] = np.where(mod_focus_combined["percentage_change"]>0, 'blue', 'red')
