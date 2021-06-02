@@ -16,7 +16,7 @@ st.title('Cohort Analysis of Module Selection')
 st.markdown('_Designed by UROP Student Han Jiatong_ | NUS WING Group')
 
 st.sidebar.header('Dashboard Demo')
-st.sidebar.markdown('    \- progress as at June 2nd')
+#st.sidebar.markdown('    \- progress as at June 2nd')
 
 # image = Image.open(IMAGE_PATH)
 # st.sidebar.image(image, )
