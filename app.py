@@ -11,7 +11,7 @@ PATH = 'biz_module_selection.csv'
 
 st.title('Cohort Analysis of Module Selection Pattern')
 
-st.sidebar('Dashboard for illustration (not yet finished)')
+st.sidebar.title('Dashboard for illustration (not yet finished)')
 
 faculty = st.selectbox('Select a faculty to explore',('Business','Soc','FASS'))
 st.write('You selected',faculty)
