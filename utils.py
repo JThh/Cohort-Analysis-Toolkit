@@ -41,7 +41,7 @@ class CohortAnalyzer():
 
         # Make sure the modules are selected only by year1 undergrad students.
         def validate_student(student, coht):
-            if int(student.admit_term/100) == coht and student.academic_career == 'UGRD':
+            if int(student.iloc[0,:].admit_term/100) == coht and student.iloc[0,:].academic_career == 'UGRD':
                 return True
             else:
                 return False
