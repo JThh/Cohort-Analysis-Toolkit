@@ -54,6 +54,11 @@ class CohortAnalyzer():
         from streamlit import caching
         caching.clear_cache()
 
+    
+    @property
+    def mod_agg(self):
+        return self.mod_agg
+    
     def integrate_module_information(self):
         self.kept_attr = ['mod_code','grading_basis','mod_faculty','mod_activity_type','mod_level']
         for attr in self.kept_attr:
@@ -77,6 +82,10 @@ class CohortAnalyzer():
 
         self.mod_info = mod_info_agg
         print('Module information successfully integrated.')
+        
+    @property
+    def mod_info(self):
+        return self.mod_info  
 
     def stata_analysis(self):
         from scipy.stats import ttest_ind, f_oneway
