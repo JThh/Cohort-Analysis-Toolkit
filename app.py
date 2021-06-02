@@ -94,8 +94,22 @@ with st.beta_expander("Principal component analysis"):
   st.subheader("Dataframe Results:")
   st.dataframe(mod_pc_diff)
   
-  st.subheader("Plot the top 10 most different modules:")
+  st.subheader("Plot the top "+str(n_mods)+" most different modules:")
   st.plotly_chart(fig, use_container_width=True)
+  
+  
+with st.beta_expander("Attribute percentage analysis"):
+  attr = st.selectbox('Select an attribute to explore',('grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level'))
+  st.write('You selected',attr)
+  
+  with st.echo():
+    mod_attr_perc_change, fig = analyzer.attr_perc_change(attr=attr)
+    
+  st.subheader("Dataframe Results:")
+  st.dataframe(mod_attr_perc_change)
+  
+  st.subheader("Plot the percentage difference for {}:".format(attr))
+  st.plotly_chart(fig, use_container_width=True)  
   
 
                                             
