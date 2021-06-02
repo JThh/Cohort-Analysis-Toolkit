@@ -7,7 +7,8 @@ from PIL import Image
 from utils import CohortAnalyzer#, ExcelDataReader
 
 #############
-DATASET_PATH = 'biz_module_selection.csv'
+MODULE_DATASET_PATH = 'biz_module_selection.csv'
+STUDENT_DATASET_PATH = 'student_program.csv'
 IMAGE_PATH = 'icon.png'
 #############
 
@@ -32,7 +33,8 @@ with st.sidebar.beta_expander("Notices"):
 faculty = st.selectbox('Select a faculty to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'))
 st.write('You selected',faculty)
 
-module = pd.read_csv(DATASET_PATH)
+module = pd.read_csv(MODULE_DATASET_PATH)
+student = pd.read_csv(STUDENT_DATASET_PATH)
 
 col1, col2 = st.beta_columns(2)
 
@@ -44,10 +46,12 @@ with col2:
   cohort2 = st.number_input('Select another cohort to compare with cohort1',min_value=cohort1+1,max_value=18,help='preferably larger than'+str(cohort1))
   st.write(cohort2,'selected')
 
-analyzer = CohortAnalyzer(module, cohort1, cohort2)
+analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
 st.write('Cohort Analyzer installed and ready.')
 
 with st.beta_expander("Processed Dataframe"):
+  coht1_stu_count, coht2_stu_count, coht1_mod_count, coht2_mod_count = analyzer.get_student_and_module_count()
+  st.write('The total students and modules of interest are',coht1_stu_count,'students for cohort',cohort1,';',coht2_stu_count,'students for cohort',cohort2,';', coht1_mod_count,'modules for cohort',cohort1,';',coht2_mod_count,'modules for cohort',cohort2,'.')
   col1, col2 = st.beta_columns(2)
 
   with col1:
