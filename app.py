@@ -45,7 +45,7 @@ with st.beta_expander("Processed Dataframe"):
       analyzer.integrate_module_information()
       st.dataframe(analyzer.mod_info)
 
-with st.beta_expander("Statistical Analysis"):
+#with st.beta_expander("Statistical Analysis"):
   
   
   
