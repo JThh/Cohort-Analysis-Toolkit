@@ -12,7 +12,7 @@ IMAGE_PATH = 'icon.png'
 #############
 
 st.title('Cohort Analysis of Module Selection Pattern')
-#st.markdown('_Designed by UROP Student Han Jiatong_ | NUS WING Group')
+st.markdown('_Designed by UROP Student Han Jiatong_ | NUS WING Group')
 
 st.sidebar.header('Dashboard Demo')
 st.sidebar.markdown('    \- progress as at June 2nd')
