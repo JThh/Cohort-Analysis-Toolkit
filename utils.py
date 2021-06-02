@@ -108,9 +108,10 @@ class CohortAnalyzer():
         return t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway
     
 
-    def plot_popular_modules(self, n=10):
+    def plot_topk_popular_modules(self, k=10):
         '''
         Plot the module enrolment sorted by module popularity.
+        Note that integrate_module_information() needs to be run first.
         :param thres: Filter only modules with at least thres amount of students enrolled.
         '''
         # Sort the modules by the sum of enrolled students in the two academic years.
@@ -119,10 +120,16 @@ class CohortAnalyzer():
         # Filter modules with total enrolment > thres
         #mod_agg_sorted_filter = mod_agg_sorted[[x > thres for x in (mod_agg_sorted[self.coht1] + mod_agg_sorted[self.coht2]).values]]
 
-        mod_melted = pd.melt(mod_agg_sorted.iloc[:n,:].drop(['mod_code'],axis=1),id_vars='mod_code_hash')
+        mod_melted = pd.melt(mod_agg_sorted.iloc[:k,:].drop(['mod_code'],axis=1),id_vars='mod_code_hash')
+
+        mod_agg_sorted_info = mod_agg_sorted.merge(self.mod_info,on='mod_code')
+
+        for attr in self.kept_attr:
+            mod_melted[attr] = mod_agg_sorted_info.loc[:k-1,attr].tolist()*2
 
         import plotly.express as px
-        fig = px.bar(mod_melted, x='mod_code_hash', y='value', color='variable',barmode='group')
+        fig = px.bar(mod_melted, x='mod_code_hash', y='value', color='variable',barmode='group',hover_data=self.kept_attr)
+        fig.update_xaxes(type='category')
         return fig
         #print("It is advised to clear the cache each time after running a graphing function!")
 
