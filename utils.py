@@ -123,7 +123,7 @@ class CohortAnalyzer():
 
         sns.factorplot(x='mod_code_hash',y='value',hue='variable',data=mod_melted,kind='bar')
         plt.show()
-        print("It is advised to clear the cache each time after running a graphing function!")
+        #print("It is advised to clear the cache each time after running a graphing function!")
 
     def get_most_different_modules(self, n=10):
         '''
@@ -162,8 +162,8 @@ class CohortAnalyzer():
 
         import plotly.express as px
         fig = px.bar(mod_diff_melted, x='index', y='value', color='variable',barmode="group",hover_data=self.kept_attr)
-        fig.show()
-        print("It is advised to clear the cache each time after running a graphing function!")
+        return fig
+        #print("It is advised to clear the cache each time after running a graphing function!")
 
     def PCAnalysis(self, n_components=5, n_iters=7, random_state=47, topkmods=10):
         stu_mod_1 = self.ds_coht1[['student_token','mod_code']].drop_duplicates().groupby(['student_token']).agg(list).reset_index()
@@ -217,8 +217,8 @@ class CohortAnalyzer():
 
         mod_diff_svd_info['color'] = np.where(mod_diff_svd_info.pc_diff > 0,'blue','red')
         fig = px.bar(mod_diff_svd_info.iloc[:topkmods,:], x='index', y='pc_diff',color='color',hover_data=['mod_code','grading_basis','mod_faculty'])
-        fig.show()     
-        print("It is advised to clear the cache each time after running a graphing function!")
+        return fig     
+        #print("It is advised to clear the cache each time after running a graphing function!")
 
     def attr_perc_change(self, attr='mod_faculty'):
         '''
@@ -238,7 +238,7 @@ class CohortAnalyzer():
         import plotly.express as px
         mod_focus_combined["color"] = np.where(mod_focus_combined["percentage_change"]>0, 'blue', 'red')
         fig = px.bar(mod_focus_combined,x=attr, y='percentage_change',color='color',hover_data={self.coht1:True,self.coht2:True,'percentage_change':':.2f'})
-        fig.show()   
+        return fig  
 
 # class ModuleMapper:
 #     def __init__(self, module_enrolment, base_cohort, comp_cohort, faculty_name="Biz"):
