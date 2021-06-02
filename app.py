@@ -44,6 +44,8 @@ with st.beta_expander("Processed Dataframe"):
     if add_info:
       analyzer.integrate_module_information()
       st.dataframe(analyzer.mod_info)
+  fig = analyzer.plot_popular_modules()
+  st.plotly_chart(fig, use_container_width=True)
 
 with st.beta_expander("Statistical Analysis"):
   st.markdown('Conduct statistical tests to check whether there are significant differences betweent the cohorts.')
@@ -74,7 +76,25 @@ with st.beta_expander("Module enrolment difference analysis"):
    
   fig = analyzer.plot_topk_diff_mod_info()
   st.plotly_chart(fig, use_container_width=True)
-   
+
+  
+with st.beta_expander("Principal component analysis"):
+  st.markdown('Utilize dimension reduction tool (e.g. SVD) to find the principal components.')
+  col1, col2 = st.beta_columns(2)
+  with col1:
+    n_components = st.number_input("Number of components to keep: (Default 5)", min_value=2, max_value=10)
+    st.write(n_components,"are selected")
+  with col2:
+    n_mods = st.number_input("Number of modules to show in graph: (Default 10)", min_value=5, max_value=15, help="Top N most different modules")
+  
+  with st.echo():
+    mod_pc_diff, fig = analyzer.PCAnalysis(n_components=n_components, topkmods="n_mods")
+  
+  st.subheader("Dataframe Results:")
+  st.dataframe(mod_pc_diff)
+  
+  st.subheader("Plot the top 10 most different modules:")
+  st.plotly_chart(fig, use_container_width=True)
   
 
                                             
