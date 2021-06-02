@@ -57,7 +57,7 @@ with st.beta_expander("Processed Dataframe"):
 
   with col1:
     st.subheader("Module enrolment data")
-    st.dataframe(analyzer.mod_agg.sample(20))
+    st.dataframe(analyzer.mod_agg.sample(10))
 
   with col2:
     st.subheader("Module information data")
