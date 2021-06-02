@@ -47,7 +47,8 @@ with st.beta_expander("Processed Dataframe"):
 
 with st.beta_expander("Statistical Analysis"):
   st.markdown('Conduct statistical tests to check whether there are significant differences betweent the cohorts.')
-  analyzer.stata_analysis()
+  with st.echo():
+    analyzer.stata_analysis()
   
   
   
