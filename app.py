@@ -83,9 +83,10 @@ with st.beta_expander("Principal component analysis"):
   col1, col2 = st.beta_columns(2)
   with col1:
     n_components = st.number_input("Number of components to keep: (Default 5)", min_value=2, max_value=10)
-    st.write(n_components,"are selected")
+    st.write(n_components,"PCs are selected")
   with col2:
     n_mods = st.number_input("Number of modules to show in graph: (Default 10)", min_value=5, max_value=15, help="Top N most different modules")
+    st.write(n_mods,"modules are selected")
   
   with st.echo():
     mod_pc_diff, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=n_mods)
