@@ -217,7 +217,7 @@ class CohortAnalyzer():
         import plotly.express as px
 
         mod_diff_svd_info['color'] = np.where(mod_diff_svd_info.pc_diff > 0,'blue','red')
-        fig = px.bar(mod_diff_svd_info.iloc[:topkmods,:], x='index', y='pc_diff',color='color',hover_data={'color':False, 'mod_code':True})
+        fig = px.bar(mod_diff_svd_info.iloc[:topkmods,:], x='index', y='pc_diff',color='color',hover_data={'color':False, 'mod_code':True, 'mod_faculty':True, 'grading_basis':True})
         return mod_diff_svd_info, fig     
         #print("It is advised to clear the cache each time after running a graphing function!")
 
