@@ -105,8 +105,8 @@ with st.beta_expander("Attribute percentage analysis"):
   with st.echo():
     mod_attr_perc_change, fig = analyzer.attr_perc_change(attr=attr)
     
-  st.subheader("Dataframe Results:")
-  st.dataframe(mod_attr_perc_change)
+#   st.subheader("Dataframe Results:")
+#   st.dataframe(mod_attr_perc_change)
   
   st.subheader("Plot the percentage difference for {}:".format(attr))
   st.plotly_chart(fig, use_container_width=True)  
