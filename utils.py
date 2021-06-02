@@ -2,30 +2,30 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import xlwings as xw
+#import xlwings as xw
 
 ACADEMIC_YEARS = [10+x for x in range(9)]
 
-class ExcelDataReader():
-    def __init__(self, path, sheet_name, range_from, range_to, index=False, header=True):
-        '''
-        Assume that pandas is already import as pd; xlwings has already been imported as xw.
-        :param range_from: the cell from which records are read.
-        :param range_to: the cell to which records are read.
-        '''
-        self.path = path
-        self.sheet_name = sheet_name
-        self.range_from = range_from
-        self.range_to = range_to
-        wb = xw.Book(path)
+# class ExcelDataReader():
+#     def __init__(self, path, sheet_name, range_from, range_to, index=False, header=True):
+#         '''
+#         Assume that pandas is already import as pd; xlwings has already been imported as xw.
+#         :param range_from: the cell from which records are read.
+#         :param range_to: the cell to which records are read.
+#         '''
+#         self.path = path
+#         self.sheet_name = sheet_name
+#         self.range_from = range_from
+#         self.range_to = range_to
+#         wb = xw.Book(path)
 
-        sheet = wb.sheets[sheet_name]
-        self._dataframe = sheet[range_from+':'+range_to].options(pd.DataFrame, index=index, header=header).value
-        print('Data successfully loaded')
+#         sheet = wb.sheets[sheet_name]
+#         self._dataframe = sheet[range_from+':'+range_to].options(pd.DataFrame, index=index, header=header).value
+#         print('Data successfully loaded')
 
-    @property
-    def dataframe(self):
-        return self._dataframe
+#     @property
+#     def dataframe(self):
+#         return self._dataframe
 
     
 class CohortAnalyzer():
