@@ -56,7 +56,7 @@ class CohortAnalyzer():
 
     
     @property
-    def mod_agg(self):
+    def _mod_agg(self):
         return self.mod_agg
     
     def integrate_module_information(self):
@@ -84,7 +84,7 @@ class CohortAnalyzer():
         print('Module information successfully integrated.')
         
     @property
-    def mod_info(self):
+    def _mod_info(self):
         return self.mod_info  
 
     def stata_analysis(self):
