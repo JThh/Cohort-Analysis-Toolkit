@@ -57,7 +57,7 @@ with st.beta_expander("Processed Dataframe"):
 
   with col1:
     st.subheader("Module enrolment data")
-    st.dataframe(analyzer.mod_agg)
+    st.dataframe(analyzer.mod_agg.sample(20))
 
   with col2:
     st.subheader("Module information data")
@@ -65,7 +65,7 @@ with st.beta_expander("Processed Dataframe"):
     if add_info:
       analyzer.integrate_module_information()
       mod_info = analyzer.mod_info.reset_index()
-      st.dataframe(mod_info)
+      st.dataframe(mod_info.sample(20))
       mod_info = None
   analyzer.integrate_module_information() # in case not called above.
   
@@ -121,7 +121,7 @@ with st.beta_expander("Principal component analysis"):
     mod_pc_diff, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=n_mods)
   
   st.subheader("Dataframe Results:")
-  st.dataframe(mod_pc_diff)
+  st.dataframe(mod_pc_diff.sample(20))
   mod_pc_diff = None
   
   st.subheader("Plot the top "+str(n_mods)+" most different modules:")
