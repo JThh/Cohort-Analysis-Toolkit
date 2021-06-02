@@ -67,7 +67,7 @@ with st.beta_expander("Statistical Analysis"):
   
 
 with st.beta_expander("Module enrolment difference analysis"):
-  st.markdown('Modules are sorted based on their enrolment differences between cohorts in descending order.')
+  st.markdown('Modules are sorted based on their enrolment differences in descending order.')
   with st.echo():
     analyzer.get_most_different_modules()
     analyzer.plot_topk_diff_mod_info(k=10)
