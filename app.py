@@ -6,11 +6,43 @@ from PIL import Image
 
 from utils import CohortAnalyzer#, ExcelDataReader
 
-#############
-MODULE_DATASET_PATH = 'biz_module_selection.csv'
-STUDENT_DATASET_PATH = 'student_program.csv'
-IMAGE_PATH = 'icon.png'
-#############
+############################### STRICTLY CONFIDENTIAL ################################
+MODULE_PATH = 'https://drive.google.com/file/d/1Ys8k21kA6AvSHEHvZnMKFCS-VTAYveAj/view?usp=sharing'
+STUDENT_PATH = 'https://drive.google.com/file/d/1aoszzf2FtJD_ijv7tCmLFap0CEdaRcrL/view?usp=sharing'
+MODULE_FILE_NAME = 'modules.csv'
+STUDENT_FILE_NAME = 'programs.csv'
+#IMAGE_PATH = 'icon.png'
+######################################################################################
+
+
+################################ AUXILIARY FUNCTIONS ##################################
+def loadDataFromDrive(dataLink, fileName):
+  '''
+    dataLink: link obtained from the right button option 'get shareable link' in drive
+    fileName: name of the file in frive
+  '''
+  # Code to read csv file into Colaboratory:
+  get_ipython().system('pip install -U -q PyDrive')
+  from pydrive.auth import GoogleAuth
+  from pydrive.drive import GoogleDrive
+  from google.colab import auth
+  from oauth2client.client import GoogleCredentials
+  # Authenticate and create the PyDrive client:
+  auth.authenticate_user()
+  gauth = GoogleAuth()
+  gauth.credentials = GoogleCredentials.get_application_default()
+  drive = GoogleDrive(gauth)
+  # get the ID from the data link:
+  fluff, id = dataLink.split('id=')
+  downloaded = drive.CreateFile({'id':id}) 
+  downloaded.GetContentFile(fileName+'.csv')  
+    
+  import pandas as pd
+  data_final_obj = pd.read_csv(fileName+'.csv')
+  
+  return data_final_obj
+######################################################################################
+
 
 st.title('Cohort Analysis of Module Selection')
 st.markdown('_Designed by UROP Student Han Jiatong_ | NUS WING Group')
@@ -31,11 +63,11 @@ st.sidebar.markdown("""_Version 1.0.0 | June 2021_""".format(unsafe_allow_html=T
  
   
 
-faculty = st.selectbox('Select a faculty to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'))
-st.write('You selected',faculty)
+selected_faculty = st.multiselectbox('Select one or more faculty(s) to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'),('Business School'))
+st.write('You selected',selected_faculty)
 
-module = pd.read_csv(MODULE_DATASET_PATH)
-student = pd.read_csv(STUDENT_DATASET_PATH)
+module = loadDataFromDrive(MODULE_PATH, MODULE_FILE_NAME)[[x in selected_faculty for x in module.faculty]].drop(['faculty'],axis=1)
+student = loadDataFromDrive(STUDENT_PATH, STUDENT_FILE_NAME)[[x in selected_faculty for x in student.faculty]].drop(['faculty'],axis=1)
 
 col1, col2 = st.beta_columns(2)
 
