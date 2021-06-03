@@ -84,8 +84,13 @@ class CohortAnalyzer():
 
         mod_info_agg = mod_info.groupby(['mod_code']).agg({'grading_basis':' '.join,'mod_faculty':max,'mod_activity_type':set,'mod_level':max})
        
-        
-        mod_info_agg.mod_activity_type = mod_info_agg.mod_activity_type.apply(list).apply(sorted).apply(','.join)
+        def filter_out_empty(lst):
+			try:
+				lst.remove(' ')
+			except ValueError:
+				pass  # do nothing!
+
+        mod_info_agg.mod_activity_type = mod_info_agg.mod_activity_type.apply(list).apply(filter_out_empty).apply(sorted).apply(','.join)
         
         def gradingBasis(string):
             if 'CSU' in string:
