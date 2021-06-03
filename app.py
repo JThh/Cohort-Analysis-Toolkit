@@ -7,11 +7,11 @@ from PIL import Image
 from utils import CohortAnalyzer#, ExcelDataReader
 
 ############################### STRICTLY CONFIDENTIAL ################################
-DRIVE_URL_MOD = 'https://drive.google.com/file/d/1Ys8k21kA6AvSHEHvZnMKFCS-VTAYveAj/view?usp=sharing'
+DRIVE_URL_MOD = 'https://drive.google.com/file/d/1VYLamyLKTYs1TejqkOX1QeNxVeRehE3t/view?usp=sharing'
 DRIVE_URL_STU = 'https://drive.google.com/file/d/1aoszzf2FtJD_ijv7tCmLFap0CEdaRcrL/view?usp=sharing'
 PATH_MOD = 'https://drive.google.com/uc?export=download&id=' + DRIVE_URL_MOD.split('/')[-2]
 PATH_STU = 'https://drive.google.com/uc?export=download&id=' + DRIVE_URL_STU.split('/')[-2]
-
+FACULTY_MAP = {'BIZ':'Business School','SoC':'School of Computing','FASS':'Faculty of Arts and Social Sciences'}
 # FILE_NAME_MOD = 'modules.csv'
 # FILE_NAME_STU = 'programs.csv'
 #IMAGE_PATH = 'icon.png'
@@ -36,15 +36,16 @@ with st.sidebar.beta_expander("Cautions"):
                       """)
 st.sidebar.markdown("""_Version 1.0.0 | June 2021_""".format(unsafe_allow_html=True))
  
-  
 
-selected_faculty = st.multiselect('Select one or more faculty(s) to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'),('Business School'))
+selected_faculty = st.multiselect('Select one or more faculty(s) to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'),('Business School'),lambda x:FACULTY_MAP[x])
 #st.write('You selected',selected_faculty)
 
+
+
 module = pd.read_csv(PATH_MOD)
-module = module[[x in selected_faculty for x in module.faculty]].drop(['faculty'],axis=1)
+module = module[[x in selected_faculty for x in module.Faculty]]
 student = pd.read_csv(PATH_STU)
-student = student[[x in selected_faculty for x in student.faculty]].drop(['faculty'],axis=1)
+student = student[[x in selected_faculty for x in student.faculty_descr]]
 
 col1, col2 = st.beta_columns(2)
 
