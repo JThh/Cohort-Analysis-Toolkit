@@ -83,6 +83,7 @@ class CohortAnalyzer():
         mod_info = self.mod_enrol[self.kept_attr].drop_duplicates()
 
         mod_info_agg = mod_info.groupby(['mod_code']).agg({'grading_basis':' '.join,'mod_faculty':max,'mod_activity_type':set,'mod_level':max})
+       
         
         mod_info_agg.mod_activity_type = mod_info_agg.mod_activity_type.apply(list).apply(sorted).apply(','.join)
         
