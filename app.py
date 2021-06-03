@@ -63,7 +63,7 @@ st.sidebar.markdown("""_Version 1.0.0 | June 2021_""".format(unsafe_allow_html=T
  
   
 
-selected_faculty = st.multiselectbox('Select one or more faculty(s) to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'),('Business School'))
+selected_faculty = st.multiselect('Select one or more faculty(s) to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'),('Business School'))
 st.write('You selected',selected_faculty)
 
 module = loadDataFromDrive(MODULE_PATH, MODULE_FILE_NAME)[[x in selected_faculty for x in module.faculty]].drop(['faculty'],axis=1)
