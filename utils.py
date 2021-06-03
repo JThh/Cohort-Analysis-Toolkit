@@ -61,7 +61,7 @@ class CohortAnalyzer():
  
         mod_agg = ds_coht_agg1.merge(ds_coht_agg2,on="mod_code").fillna(0).rename({'count_x':self.coht1,'count_y':self.coht2},axis=1)
 
-        self.mod_agg = mod_agg
+        self.mod_agg = mod_agg.fillna(0)
         self.mod_agg['mod_code_hash'] = list(range(mod_agg.shape[0]))
     
     def unload_dataframes():
