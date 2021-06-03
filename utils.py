@@ -261,7 +261,7 @@ class CohortAnalyzer():
 
         import plotly.express as px
         mod_focus_combined["color"] = np.where(mod_focus_combined["percentage_change"]>0, 'blue', 'red')
-        fig = px.bar(mod_focus_combined,x=attr, y='percentage_change',color='color',hover_data={self.coht1:True,self.coht2:True,'percentage_change':':.2f'})
+        fig = px.bar(mod_focus_combined,x=attr, y='percentage_change',color='color',color_discrete_map={'blue':'#636EFA','red':'#EF553B'},hover_data={self.coht1:True,self.coht2:True,'percentage_change':':.2f'})
         return mod_focus_combined, fig  
 
 # class ModuleMapper:
