@@ -86,9 +86,9 @@ class CohortAnalyzer():
        
         def filter_out_empty(lst):
             try:
-	        lst.remove(' ')
-	    except ValueError:
-	        pass  # do nothing!
+	            lst.remove(' ')
+            except ValueError:
+	            pass  # do nothing!
 
         mod_info_agg.mod_activity_type = mod_info_agg.mod_activity_type.apply(list).apply(filter_out_empty).apply(sorted).apply(','.join)
         
