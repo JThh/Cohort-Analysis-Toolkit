@@ -22,8 +22,8 @@ def loadDataFromDrive(dataLink, fileName):
     fileName: name of the file in frive
   '''
   # Code to read csv file into Colaboratory:
-  from IPython import get_ipython
-  get_ipython().system('pip install -U -q google-colab')
+#   from IPython import get_ipython
+#   get_ipython().system('pip install -U -q google-colab')
   #import google.colab
   from pydrive.auth import GoogleAuth
   from pydrive.drive import GoogleDrive
