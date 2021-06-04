@@ -28,7 +28,7 @@ st.sidebar.header('Dashboard Demo')
 # image = Image.open(IMAGE_PATH)
 # st.sidebar.image(image, )
 
-with st.sidebar.beta_expander("Cautions"):
+with st.sidebar.beta_expander("Notes"):
   st.markdown("""
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
                       2. The app is updated and functional until 2nd June;
