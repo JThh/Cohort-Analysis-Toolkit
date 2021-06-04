@@ -34,7 +34,7 @@ with st.sidebar.beta_expander("Cautions"):
                       2. The app is updated and functional until 2nd June;
                       3. The source code is openly shared under MIT license.
                       """)
-st.sidebar.markdown("""_Version 1.0.0 | June 2021_""".format(unsafe_allow_html=True))
+st.sidebar.markdown("""_Version 1.1.0 | June 4th 2021_""".format(unsafe_allow_html=True))
  
 
 #selected_faculty = st.multiselect('Select one or more faculty(s) to explore',('Business School','School of Computing','Faculty of Arts and Social Sciences'),('Business School'),lambda x:FACULTY_MAP[x])
