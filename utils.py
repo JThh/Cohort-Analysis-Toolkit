@@ -196,7 +196,7 @@ class CohortAnalyzer:
         # else:
         #     print("There isn't significant difference in the selection variances between two cohorts.")
 
-        return t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway
+        return map(lambda x : float("{:.2f}".format(x)), (t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway))
 
     def plot_topk_popular_modules(self, k=10):
         """
