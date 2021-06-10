@@ -222,7 +222,7 @@ with st.beta_expander("Module enrolment difference analysis"):
         cohort2,
         "selected",
         rand_stu_num_of_mod2,
-        "modules in that academic year",
+        "distinct modules in that academic year",
     )
 
     col1, col2 = st.beta_columns(2)

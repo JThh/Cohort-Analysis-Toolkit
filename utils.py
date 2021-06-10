@@ -361,8 +361,8 @@ class CohortAnalyzer:
         )
 
         return (
-            sample_coht1_stu_mods.shape[0],
-            sample_coht2_stu_mods.shape[0],
+            sample_coht1_stu_mods.mod_code.nunique(),
+            sample_coht2_stu_mods.mod_code.nunique(),
             fig1,
             fig2,
         )
