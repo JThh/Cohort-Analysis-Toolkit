@@ -104,7 +104,7 @@ class CohortAnalyzer():
                 return 'NON'
         mod_info_agg['grading_basis'] = mod_info_agg['grading_basis'].apply(gradingBasis)
 
-        self.mod_info = mod_info_agg
+        self.mod_info = mod_info_agg.reset_index()
         print('Module information successfully integrated.')
         
     @property
