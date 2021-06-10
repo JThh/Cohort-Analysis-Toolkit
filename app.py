@@ -108,7 +108,21 @@ with st.beta_expander("Statistical Analysis"):
   
 
 with st.beta_expander("Module enrolment difference analysis"):
-  st.markdown('Modules are sorted based on their enrolment differences in descending order.')
+  st.markdown('Student level analysis: Select a random student from each cohort to compare their module selection patterns')
+  attr_input = st.selectbox('Choose which property to observe',('grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level'),index=1)
+  rand_stu_token1, rand_stu_token2, rand_stu_num_of_mod1, rand_stu_num_of_mod2, fig1, fig2 = analyzer.plot_random_student_selection_info(attr=attr_input)
+
+  st.write('Student token from cohort',cohort1,':',rand_stu_token1,'selected',rand_stu_num_of_mod1,'modules in year 1;','Student token from cohort',cohort2,':',rand_stu_token2,'selected',rand_stu_num_of_mod2,'modules in year 2')
+
+  col1, col2 = st.beta_columns(2)
+
+  with col1:
+    st.plotly_chart(fig1, use_container_width=True)
+
+  with col2:
+    st.plotly_chart(fig2, use_container_width=True)
+
+  st.markdown('Module level analysis: Modules are sorted based on their enrolment differences in descending order.')
   top_k = st.number_input('Top k modules',min_value=5, max_value=20, value=10, help='shown on the graph in sorted order')
   st.write(top_k,'modules are selected')
   with st.echo():
