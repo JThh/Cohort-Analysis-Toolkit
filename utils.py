@@ -466,6 +466,7 @@ class CohortAnalyzer:
             embeddings,
             labels=label,
             dimensions=range(n_components),
+            color=embeddings.cohort
         )
         pca_fig.update_traces(diagonal_visible=False)              
 
