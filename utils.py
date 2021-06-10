@@ -448,7 +448,7 @@ class CohortAnalyzer:
         embeddings_2['cohort'] = 'Cohort2'
 
 
-        embeddings = pd.concat(embeddings_1, embeddings_2)
+        embeddings = pd.concat([embeddings_1, embeddings_2],ignore_index=True)
 
         print("SVD Model successfully trained.")
 
