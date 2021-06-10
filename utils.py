@@ -473,6 +473,11 @@ class CohortAnalyzer:
         )
         pca_fig.update_traces(diagonal_visible=False)
 
+        pca_fig.update_yaxes(tickangle=45)
+
+        if n_components > 3:
+            pca_fig.update_xaxes(tickangle=45)
+
         pc_diff = np.array([0] * n_mod_list, dtype=float)
 
         for i in range(n_components):
