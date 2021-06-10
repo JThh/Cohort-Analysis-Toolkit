@@ -181,7 +181,7 @@ class CohortAnalyzer():
 	
 	def plot_random_student_selection_info(self,attr='mod_faculty',at_least_selecting=10):
 		assert attr in self.kept_attr
-		
+
 		def sample_student(ds_coht):
 			agg_stu = ds_coht[['student_token','mod_code']].groupby(['student_token']).apply(count).rename({'mod_code':'count'},axis=1).reset_index()
 			filtered_stu = agg_stu[agg_stu.count >= at_least_selecting]
@@ -190,18 +190,18 @@ class CohortAnalyzer():
 			filtered_stu = None
 			selected_stu = ds_coht[[x == selected_stu_token for x in ds_coht.student_token]]['mod_code'].reset_index()
 			return selected_stu_token, selected_stu
-			
+
 		sample_coht1_stu_token, sample_coht1_stu_mods = sample_student(self.ds_coht1)
 		sample_coht2_stu_token, sample_coht2_stu_mods = sample_student(self.ds_coht2)
-		
+
 		stu_mod_cross1 = sample_coht1_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).apply(count).reset_index()
 		stu_mod_cross2 = sample_coht2_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).apply(count).reset_index()
 
 		import plotly.express as px
-        
+
 		fig1 = px.pie(stu_mod_cross1, values='mod_code', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht1)
-        fig2 = px.pie(stu_mod_cross2, values='mod_code', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2)
-        
+	fig2 = px.pie(stu_mod_cross2, values='mod_code', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2)
+
 		return sample_coht1_stu_token, sample_coht2_stu_token, sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
 		
 
