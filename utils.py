@@ -432,6 +432,8 @@ class CohortAnalyzer:
             for mod in row[1].mod_code:
                 vec[module_set.index(mod)] = 1
             stu_mod_vec_2.append(vec)
+        
+        stu_mod_1 = stu_mod_2 = None # Clear the cache
 
         from sklearn.decomposition import TruncatedSVD
 
@@ -441,8 +443,6 @@ class CohortAnalyzer:
 
         stacked_cohort_vec = pd.concat([pd.DataFrame(stu_mod_vec_1),pd.DataFrame(stu_mod_vec_2)],ignore_index=True)
         stacked_cohort_vec['cohort'] = [self.coht1] * len(stu_mod_vec_1) + [self.coht2] * len(stu_mod_vec_2)
-        
-        stu_mod_1 = stu_mod_2 = stu_mod_vec_1 = stu_mod_vec_2 = None # Clear the cache
         
         embeddings = svd.fit_transform(stacked_cohort_vec.iloc[:,:-1])
 
@@ -464,7 +464,7 @@ class CohortAnalyzer:
         )
         pca_fig.update_traces(diagonal_visible=False)
 
-        svd = embeddings = None
+        svd = embeddings = None #Clear the cache
 
         svd1 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
