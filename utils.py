@@ -196,7 +196,10 @@ class CohortAnalyzer:
         # else:
         #     print("There isn't significant difference in the selection variances between two cohorts.")
 
-        return map(lambda x : float("{:.2f}".format(x)), (t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway))
+        return map(
+            lambda x: float("{:.2f}".format(x)),
+            (t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway),
+        )
 
     def plot_topk_popular_modules(self, k=10):
         """
@@ -274,7 +277,11 @@ class CohortAnalyzer:
             print("Most different module list obtained.")
 
     def plot_random_student_selection_info(
-        self, attr="mod_faculty", at_least_selecting=10, random_state=167, num_students = 1
+        self,
+        attr="mod_faculty",
+        at_least_selecting=10,
+        random_state=167,
+        num_students=1,
     ):
         assert attr in self.kept_attr
 
@@ -350,15 +357,9 @@ class CohortAnalyzer:
             "xanchor": "center",
             "yanchor": "bottom",
         }
-        
-        fig1.update_layout(
-            legend=custom_legend,
-            title=custom_title1
-        )
-        fig2.update_layout(
-            legend=custom_legend,
-            title=custom_title2
-        )
+
+        fig1.update_layout(legend=custom_legend, title=custom_title1)
+        fig2.update_layout(legend=custom_legend, title=custom_title2)
 
         return (
             sample_coht1_stu_mods.mod_code.nunique(),

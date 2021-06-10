@@ -120,16 +120,16 @@ with st.beta_expander("Processed Dataframe"):
 
     with col2:
         st.subheader("Module information data")
-        add_info = st.checkbox(
-            "Whether to integrate module information?",
-            help="Module information is inclusive of module faculty, module level, etc.",
-        )
-        if add_info:
-            analyzer.integrate_module_information()
-            mod_info = analyzer.mod_info.reset_index()
-            st.dataframe(mod_info.head(30))
-            mod_info = None
-    analyzer.integrate_module_information()  # in case not called above.
+        # add_info = st.checkbox(
+        #     "Whether to integrate module information?",
+        #     help="Module information is inclusive of module faculty, module level, etc.",
+        # )
+        # if add_info:
+        analyzer.integrate_module_information()
+        mod_info = analyzer.mod_info.reset_index().copy()
+        st.dataframe(mod_info.head(30))
+        mod_info = None
+    # analyzer.integrate_module_information()  # in case not called above.
 
     st.subheader("Most enroled modules in both cohorts")
     fig = analyzer.plot_topk_popular_modules()
