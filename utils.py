@@ -447,13 +447,39 @@ class CohortAnalyzer:
 
         print("SVD Model successfully trained.")
 
-        pcs_1 = svd1.components_
-        pcs_2 = svd2.components_
+        components_1 = svd1.components_
+        components_2 = svd2.components_
+
+        label1 = {
+            str(i): f"PC {i+1} ({var:.1f}%)"
+            for i, var in enumerate(svd1.explained_variance_ratio_ * 100)
+        }
+
+        label2 = {
+            str(i): f"PC {i+1} ({var:.1f}%)"
+            for i, var in enumerate(svd2.explained_variance_ratio_ * 100)
+        }
+
+        import plotly.express as px
+
+        pca_fig1 = px.scatter_matrix(
+            components_1,
+            labels=label1,
+            dimensions=range(n_components),
+        )
+        pca_fig1.update_traces(diagonal_visible=False)        
+
+        pca_fig2 = px.scatter_matrix(
+            components_2,
+            labels=label2,
+            dimensions=range(n_components),
+        )
+        pca_fig2.update_traces(diagonal_visible=False)        
 
         pc_diff = np.array([0] * n_mod_list, dtype=float)
 
         for i in range(n_components):
-            pc_diff = pc_diff + (pcs_2[i] - pcs_1[i]) * (n_components - i) / sum(
+            pc_diff = pc_diff + (components_2[i] - components_1[i]) * (n_components - i) / sum(
                 range(1, n_components + 1)
             )
 
@@ -465,8 +491,6 @@ class CohortAnalyzer:
         mod_diff_svd_info = mod_diff_svd_sorted.merge(
             self.mod_info, on="mod_code"
         ).reset_index()
-
-        import plotly.express as px
 
         mod_diff_svd_info["color"] = np.where(
             mod_diff_svd_info.pc_diff > 0, "blue", "red"
@@ -484,7 +508,7 @@ class CohortAnalyzer:
                 "grading_basis": True,
             },
         )
-        return mod_diff_svd_info, fig
+        return mod_diff_svd_info, pca_fig1, pca_fig2, fig
         # print("It is advised to clear the cache each time after running a graphing function!")
 
     def attr_perc_change(self, attr="mod_faculty"):

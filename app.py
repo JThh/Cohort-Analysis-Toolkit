@@ -260,32 +260,41 @@ with st.beta_expander("Principal component analysis"):
     col1, col2 = st.beta_columns(2)
     with col1:
         n_components = st.number_input(
-            "Number of components to keep: (Default 5)",
+            "Number of components to keep: (Default 2)",
             min_value=2,
             max_value=10,
-            value=5,
+            value=2,
         )
         st.write(n_components, "PCs are selected")
     with col2:
-        n_mods = st.number_input(
+        k_mods = st.number_input(
             "Number of modules to show in graph: (Default 10)",
             min_value=5,
             max_value=15,
             value=10,
-            help="Top N most different modules",
+            help="Top K most different modules",
         )
-        st.write(n_mods, "modules are selected")
+        st.write(k_mods, "modules are selected")
 
-    with st.echo():
-        mod_pc_diff, fig = analyzer.PCAnalysis(
-            n_components=n_components, topkmods=n_mods
-        )
+    # with st.echo():
+    #     mod_pc_diff, fig = analyzer.PCAnalysis(
+    #         n_components=n_components, topkmods=k_mods
+    #     )
 
+    mod_pc_diff, fig, pca_fig1, pca_fig2 = analyzer.PCAnalysis(n_components=n_components, topkmods=k_mods)
+
+    col1, col2 = st.beta_columns(2)
+    with col1:
+        st.plotly_chart(pca_fig1, use_container_width=True)
+    
+    with col2:
+        st.plotly_chart(pca_fig2, use_container_width=True)
+        
     st.subheader("Dataframe Results:")
-    st.dataframe(mod_pc_diff.head(30))
+    st.dataframe(mod_pc_diff.sample(30).reset_index(drop=True))
     mod_pc_diff = None
 
-    st.subheader("Plot the top " + str(n_mods) + " most different modules:")
+    st.subheader("Plot the top " + str(k_mods) + " most different modules:")
     st.plotly_chart(fig, use_container_width=True)
     fig = None
 
