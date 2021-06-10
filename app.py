@@ -112,7 +112,7 @@ with st.beta_expander("Module enrolment difference analysis"):
   st.markdown('Select a random student from each cohort to compare their module selection patterns')
   attr_input = st.selectbox('Choose which property to observe',('grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level'),index=1)
 
-  col1, col2 = st.beta_columns(2)
+  col1, col2 = st.beta_columns([3,1])
 
   with col1:
     min_num_mods = st.slider('Minimum number of modules taken',min_value=0,max_value=16,value=10)
@@ -125,16 +125,15 @@ with st.beta_expander("Module enrolment difference analysis"):
   rand_stu_num_of_mod1, rand_stu_num_of_mod2, fig1, fig2 = analyzer.plot_random_student_selection_info(attr=attr_input,at_least_selecting=min_num_mods,random_state=seed)
   st.write('Analyzer is ready.')
 
-  if st.button('Pick a random student'):
-    st.write('The random student from cohort',cohort1,'selected',rand_stu_num_of_mod1,'modules in year 1;','random Student from cohort',cohort2,'selected',rand_stu_num_of_mod2,'modules in year 1')
+  st.write('The random student from cohort',cohort1,'selected',rand_stu_num_of_mod1,'modules in year 1;','random Student from cohort',cohort2,'selected',rand_stu_num_of_mod2,'modules in year 1')
 
-    col1, col2 = st.beta_columns(2)
+  col1, col2 = st.beta_columns(2)
 
-    with col1:
-      st.plotly_chart(fig1, use_container_width=True)
+  with col1:
+    st.plotly_chart(fig1, use_container_width=True)
 
-    with col2:
-      st.plotly_chart(fig2, use_container_width=True)
+  with col2:
+    st.plotly_chart(fig2, use_container_width=True)
 
   st.subheader('Module level analysis')
   st.markdown('Modules are sorted based on their enrolment differences in descending order.')
