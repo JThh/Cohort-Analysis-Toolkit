@@ -456,7 +456,7 @@ class CohortAnalyzer:
         components_2 = svd2.components_
 
         label = {
-            str(i): f"PC {i+1}"
+            str(i): f"PC {i+1} (Cohort1: {svd1.explained_variance_ratio_[i]*100}%,Cohort2: {svd2.explained_variance_ratio_[i]*100}%)"
             for i in range(n_components)
         }
 
