@@ -188,11 +188,11 @@ class CohortAnalyzer():
             
             selected_stu_token = filtered_stu.sample(1).student_token.values[0]
             filtered_stu = agg_stu = ds_coht = None # clear the cache
-            selected_stu = ds_of_interest[[x == selected_stu_token for x in ds_coht.student_token]]['mod_code'].reset_index()
-            return selected_stu_token, selected_stu
+            selected_stu = ds_of_interest[[x == selected_stu_token for x in ds_of_interest.student_token]]['mod_code'].reset_index()
+            return selected_stu
 
-        sample_coht1_stu_token, sample_coht1_stu_mods = sample_student(self.ds_coht1)
-        sample_coht2_stu_token, sample_coht2_stu_mods = sample_student(self.ds_coht2)
+        sample_coht1_stu_mods = sample_student(self.ds_coht1)
+        sample_coht2_stu_mods = sample_student(self.ds_coht2)
 
         stu_mod_cross1 = sample_coht1_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).size().reset_index(name='counts')
         stu_mod_cross2 = sample_coht2_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).size().reset_index(name='counts')
@@ -202,7 +202,7 @@ class CohortAnalyzer():
         fig1 = px.pie(stu_mod_cross1, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht1, labels=False)
         fig2 = px.pie(stu_mod_cross2, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2, labels=False)
 
-        return sample_coht1_stu_token, sample_coht2_stu_token, sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
+        return sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
 
 
     def plot_topk_diff_mod_info(self,k=10):
