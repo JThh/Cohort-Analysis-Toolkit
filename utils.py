@@ -46,8 +46,8 @@ STUDENT_ATTRIBUTES = ["student_token", "term", "academic_career", "admit_term"]
 
 class CohortAnalyzer:
     def __init__(self, mod_enrol, student_program, coht1, coht2):
-        self.coht1 = "Cohort" + str(coht1)
-        self.coht2 = "Cohort" + str(coht2)
+        self.coht1 = "Cohort " + str(coht1)
+        self.coht2 = "Cohort " + str(coht2)
         assert coht1 in ACADEMIC_YEARS and coht2 in ACADEMIC_YEARS
 
         for attr in EMROLMENT_ATTRIBUTES:
@@ -435,30 +435,21 @@ class CohortAnalyzer:
 
         from sklearn.decomposition import TruncatedSVD
 
-        svd1 = TruncatedSVD(
+        svd = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
-        embeddings_1 = pd.DataFrame(svd1.fit_transform(stu_mod_vec_1))
-        embeddings_1["cohort"] = "Cohort1"
 
-        svd2 = TruncatedSVD(
-            n_components=n_components, n_iter=n_iters, random_state=random_state
-        )
-        embeddings_2 = pd.DataFrame(svd2.fit_transform(stu_mod_vec_2))
-        embeddings_2["cohort"] = "Cohort2"
-
-        embeddings = pd.concat([embeddings_1, embeddings_2], ignore_index=True)
-
-        print("SVD Model successfully trained.")
-
-        components_1 = svd1.components_
-        components_2 = svd2.components_
+        stacked_cohort_vec = pd.concat([pd.DataFrame(stu_mod_vec_1),pd.DataFrame(stu_mod_vec_2)],ignore_index=True)
+        stacked_cohort_vec['cohort'] = [self.coht1] * len(stu_mod_vec_1) + [self.coht2] * len(stu_mod_vec_2)
+        
+        stu_mod_1 = stu_mod_2 = stu_mod_vec_1 = stu_mod_vec_2 = None # Clear the cache
+        
+        embeddings = svd.fit_transform(stacked_cohort_vec.iloc[:,:-1])
 
         label = {
-            str(i): "PC {} (Cohort1: {:.1f}%, Cohort2: {:.1f}%)".format(
+            str(i): "PC {} ({:.1f}%)".format(
                 i + 1,
-                svd1.explained_variance_ratio_[i] * 100,
-                svd2.explained_variance_ratio_[i] * 100,
+                svd.explained_variance_ratio_[i] * 100
             )
             for i in range(n_components)
         }
@@ -469,14 +460,26 @@ class CohortAnalyzer:
             embeddings,
             labels=label,
             dimensions=range(n_components),
-            color=embeddings.cohort,
+            color=stacked_cohort_vec.cohort,
         )
         pca_fig.update_traces(diagonal_visible=False)
 
-        pca_fig.update_yaxes(tickangle=45)
+        svd = embeddings = None
 
-        if n_components > 3:
-            pca_fig.update_xaxes(tickangle=45)
+        svd1 = TruncatedSVD(
+            n_components=n_components, n_iter=n_iters, random_state=random_state
+        )
+        svd1.fit(stu_mod_vec_1)
+
+        svd2 = TruncatedSVD(
+            n_components=n_components, n_iter=n_iters, random_state=random_state
+        )
+        svd2.fit(stu_mod_vec_2)
+
+        #print("SVD Model successfully trained.")
+
+        components_1 = svd1.components_
+        components_2 = svd2.components_
 
         pc_diff = np.array([0] * n_mod_list, dtype=float)
 
