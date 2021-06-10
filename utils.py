@@ -332,21 +332,17 @@ class CohortAnalyzer:
             y=1.02,
             xanchor="right",
             x=1,
-            font=dict(size=8, color="black"),
+            font=dict(size=12, color="black"),
         )
 
         custom_title1 = {
             "text": "Distribution in " + attr + " from " + self.coht1,
-            "y": 0.9,
-            "x": 0.5,
             "xanchor": "center",
             "yanchor": "bottom",
         }
 
         custom_title2 = {
             "text": "Distribution in " + attr + " from " + self.coht2,
-            "y": 0.9,
-            "x": 0.5,
             "xanchor": "center",
             "yanchor": "bottom",
         }
