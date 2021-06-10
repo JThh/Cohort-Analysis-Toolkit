@@ -439,16 +439,15 @@ class CohortAnalyzer:
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
         embeddings_1 = pd.DataFrame(svd1.fit_transform(stu_mod_vec_1))
-        embeddings_1['cohort'] = 'Cohort1'
+        embeddings_1["cohort"] = "Cohort1"
 
         svd2 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
         embeddings_2 = pd.DataFrame(svd2.fit_transform(stu_mod_vec_2))
-        embeddings_2['cohort'] = 'Cohort2'
+        embeddings_2["cohort"] = "Cohort2"
 
-
-        embeddings = pd.concat([embeddings_1, embeddings_2],ignore_index=True)
+        embeddings = pd.concat([embeddings_1, embeddings_2], ignore_index=True)
 
         print("SVD Model successfully trained.")
 
@@ -456,7 +455,11 @@ class CohortAnalyzer:
         components_2 = svd2.components_
 
         label = {
-            str(i): "PC {} (Cohort1: {:.3f}%, Cohort2: {:.3f}%".format(i+1, svd1.explained_variance_ratio_[i]*100, svd2.explained_variance_ratio_[i]*100)
+            str(i): "PC {} (Cohort1: {:.1f}%, Cohort2: {:.1f}%)".format(
+                i + 1,
+                svd1.explained_variance_ratio_[i] * 100,
+                svd2.explained_variance_ratio_[i] * 100,
+            )
             for i in range(n_components)
         }
 
@@ -466,16 +469,16 @@ class CohortAnalyzer:
             embeddings,
             labels=label,
             dimensions=range(n_components),
-            color=embeddings.cohort
+            color=embeddings.cohort,
         )
-        pca_fig.update_traces(diagonal_visible=False)              
+        pca_fig.update_traces(diagonal_visible=False)
 
         pc_diff = np.array([0] * n_mod_list, dtype=float)
 
         for i in range(n_components):
-            pc_diff = pc_diff + (components_2[i] - components_1[i]) * (n_components - i) / sum(
-                range(1, n_components + 1)
-            )
+            pc_diff = pc_diff + (components_2[i] - components_1[i]) * (
+                n_components - i
+            ) / sum(range(1, n_components + 1))
 
         mod_diff_svd = pd.DataFrame({"mod_code": module_set, "pc_diff": pc_diff})
         mod_diff_svd_sorted = mod_diff_svd.iloc[
