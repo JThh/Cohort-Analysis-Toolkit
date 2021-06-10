@@ -2,14 +2,24 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-#import xlwings as xw
+
+# import xlwings as xw
 
 ################   GLOBAL VARIABLES   ################
-ACADEMIC_YEARS = [10+x for x in range(9)]
-EMROLMENT_ATTRIBUTES = ['student_token', 'term', 'academic_career', 'mod_code', 'mod_name',
-       'grading_basis', 'mod_faculty',
-       'mod_department', 'mod_activity_type', 'mod_level']
-STUDENT_ATTRIBUTES = ['student_token', 'term', 'academic_career', 'admit_term']
+ACADEMIC_YEARS = [10 + x for x in range(9)]
+EMROLMENT_ATTRIBUTES = [
+    "student_token",
+    "term",
+    "academic_career",
+    "mod_code",
+    "mod_name",
+    "grading_basis",
+    "mod_faculty",
+    "mod_department",
+    "mod_activity_type",
+    "mod_level",
+]
+STUDENT_ATTRIBUTES = ["student_token", "term", "academic_career", "admit_term"]
 ######################################################
 
 # class ExcelDataReader():
@@ -33,91 +43,153 @@ STUDENT_ATTRIBUTES = ['student_token', 'term', 'academic_career', 'admit_term']
 #     def dataframe(self):
 #         return self._dataframe
 
-    
-class CohortAnalyzer():
+
+class CohortAnalyzer:
     def __init__(self, mod_enrol, student_program, coht1, coht2):
-        self.coht1 = 'Cohort'+str(coht1)
-        self.coht2 = 'Cohort'+str(coht2)
+        self.coht1 = "Cohort" + str(coht1)
+        self.coht2 = "Cohort" + str(coht2)
         assert coht1 in ACADEMIC_YEARS and coht2 in ACADEMIC_YEARS
-        
+
         for attr in EMROLMENT_ATTRIBUTES:
             assert attr in mod_enrol.columns
-        
+
         for attr in STUDENT_ATTRIBUTES:
             assert attr in student_program.columns
-        
+
         self.mod_enrol = mod_enrol
-        mod_stu_cross = mod_enrol.merge(student_program.drop(['term','academic_career'],axis=1).drop_duplicates(subset=['student_token']), on="student_token", how='left')
+        mod_stu_cross = mod_enrol.merge(
+            student_program.drop(["term", "academic_career"], axis=1).drop_duplicates(
+                subset=["student_token"]
+            ),
+            on="student_token",
+            how="left",
+        )
 
-            
-        self.ds_coht1 = mod_enrol[[int(row.term/100) == int(row.admit_term/100) == coht1 and row.academic_career == 'UGRD' for row in mod_stu_cross.itertuples()]]
-        self.ds_coht2 = mod_enrol[[int(row.term/100) == int(row.admit_term/100) == coht2 and row.academic_career == 'UGRD' for row in mod_stu_cross.itertuples()]]
+        self.ds_coht1 = mod_enrol[
+            [
+                int(row.term / 100) == int(row.admit_term / 100) == coht1
+                and row.academic_career == "UGRD"
+                for row in mod_stu_cross.itertuples()
+            ]
+        ]
+        self.ds_coht2 = mod_enrol[
+            [
+                int(row.term / 100) == int(row.admit_term / 100) == coht2
+                and row.academic_career == "UGRD"
+                for row in mod_stu_cross.itertuples()
+            ]
+        ]
 
-        self.ds_coht1['count'] = 1
-        self.ds_coht2['count'] = 1
+        self.ds_coht1["count"] = 1
+        self.ds_coht2["count"] = 1
 
-        ds_coht_agg1 = self.ds_coht1[['count','mod_code']].groupby(['mod_code']).sum().reset_index()
-        ds_coht_agg2 = self.ds_coht2[['count','mod_code']].groupby(['mod_code']).sum().reset_index()
- 
-        mod_agg = ds_coht_agg1.merge(ds_coht_agg2,on="mod_code").fillna(0).rename({'count_x':self.coht1,'count_y':self.coht2},axis=1)
+        ds_coht_agg1 = (
+            self.ds_coht1[["count", "mod_code"]]
+            .groupby(["mod_code"])
+            .sum()
+            .reset_index()
+        )
+        ds_coht_agg2 = (
+            self.ds_coht2[["count", "mod_code"]]
+            .groupby(["mod_code"])
+            .sum()
+            .reset_index()
+        )
+
+        mod_agg = (
+            ds_coht_agg1.merge(ds_coht_agg2, on="mod_code")
+            .fillna(0)
+            .rename({"count_x": self.coht1, "count_y": self.coht2}, axis=1)
+        )
 
         self.mod_agg = mod_agg.fillna(0)
-        self.mod_agg['mod_code_hash'] = list(range(mod_agg.shape[0]))
+        self.mod_agg["mod_code_hash"] = list(range(mod_agg.shape[0]))
 
     def get_student_and_module_count(self):
-        return self.ds_coht1.student_token.nunique(), self.ds_coht2.student_token.nunique(), self.ds_coht1.mod_code.nunique(), self.ds_coht2.mod_code.nunique()
-    
+        return (
+            self.ds_coht1.student_token.nunique(),
+            self.ds_coht2.student_token.nunique(),
+            self.ds_coht1.mod_code.nunique(),
+            self.ds_coht2.mod_code.nunique(),
+        )
+
     @property
     def _mod_agg(self):
         return self.mod_agg
-    
+
     def integrate_module_information(self):
-        self.kept_attr = ['mod_code','grading_basis','mod_faculty','mod_activity_type','mod_level']
+        self.kept_attr = [
+            "mod_code",
+            "grading_basis",
+            "mod_faculty",
+            "mod_activity_type",
+            "mod_level",
+        ]
         for attr in self.kept_attr:
             assert attr in self.mod_enrol.columns
         mod_info = self.mod_enrol[self.kept_attr].drop_duplicates()
 
-        mod_info_agg = mod_info.groupby(['mod_code']).agg({'grading_basis':' '.join,'mod_faculty':max,'mod_activity_type':set,'mod_level':max})
-       
+        mod_info_agg = mod_info.groupby(["mod_code"]).agg(
+            {
+                "grading_basis": " ".join,
+                "mod_faculty": max,
+                "mod_activity_type": set,
+                "mod_level": max,
+            }
+        )
+
         def filter_out_empty(lst):
             try:
-	            lst.remove(' ')
+                lst.remove(" ")
             except ValueError:
-	            pass  # do nothing!
+                pass  # do nothing!
             return lst
 
-        mod_info_agg.mod_activity_type = mod_info_agg.mod_activity_type.apply(list).apply(filter_out_empty).apply(sorted).apply(','.join)
-        
+        mod_info_agg.mod_activity_type = (
+            mod_info_agg.mod_activity_type.apply(list)
+            .apply(filter_out_empty)
+            .apply(sorted)
+            .apply(",".join)
+        )
+
         def gradingBasis(string):
-            if 'CSU' in string:
-                return 'CSU'
-            elif 'SNU' in string:
-                return 'SNU'
-            elif 'GRD' in string:
-                return 'GRD'
+            if "CSU" in string:
+                return "CSU"
+            elif "SNU" in string:
+                return "SNU"
+            elif "GRD" in string:
+                return "GRD"
             else:
-                return 'NON'
-        mod_info_agg['grading_basis'] = mod_info_agg['grading_basis'].apply(gradingBasis)
+                return "NON"
+
+        mod_info_agg["grading_basis"] = mod_info_agg["grading_basis"].apply(
+            gradingBasis
+        )
 
         self.mod_info = mod_info_agg.reset_index()
-        print('Module information successfully integrated.')
-        
+        print("Module information successfully integrated.")
+
     @property
     def _mod_info(self):
-        return self.mod_info  
+        return self.mod_info
 
     def stata_analysis(self):
         from scipy.stats import ttest_ind, f_oneway
-        #print('Running t-test')
-        t_sta_ttest, p_value_ttest = ttest_ind(self.mod_agg[self.coht1],self.mod_agg[self.coht2])
-        #print('t test result: t-statistics:',t-sta,',p value:'p_value)
+
+        # print('Running t-test')
+        t_sta_ttest, p_value_ttest = ttest_ind(
+            self.mod_agg[self.coht1], self.mod_agg[self.coht2]
+        )
+        # print('t test result: t-statistics:',t-sta,',p value:'p_value)
         # if p_value < 0.05:
         #     print("There is significant difference in the mean student enrolments between two cohorts. And the p-value for t test is",p_value)
         # else:
         #     print("There isn't significant difference in the mean student enrolments between two cohorts.")
 
         # print('Running one-way anova test')
-        t_sta_oneway, p_value_oneway = f_oneway(self.mod_agg[self.coht1],self.mod_agg[self.coht2])
+        t_sta_oneway, p_value_oneway = f_oneway(
+            self.mod_agg[self.coht1], self.mod_agg[self.coht2]
+        )
         # print('ANOVA test result: t-statistics:',t-sta,',p value:'p_value)
         # if p_value < 0.05:
         #     print("There is significant difference in the selection variances between two cohorts. And the p-value for anova test is",p_value)
@@ -125,131 +197,223 @@ class CohortAnalyzer():
         #     print("There isn't significant difference in the selection variances between two cohorts.")
 
         return t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway
-    
 
     def plot_topk_popular_modules(self, k=10):
-        '''
+        """
         Plot the module enrolment sorted by module popularity.
         Note that integrate_module_information() needs to be run first.
         :param thres: Filter only modules with at least thres amount of students enrolled.
-        '''
+        """
         # Sort the modules by the sum of enrolled students in the two academic years.
-        mod_agg_sorted = self.mod_agg.iloc[(self.mod_agg[self.coht1] + self.mod_agg[self.coht2]).sort_values(ascending=False).index,:].reset_index(drop=True)
-        
+        mod_agg_sorted = self.mod_agg.iloc[
+            (self.mod_agg[self.coht1] + self.mod_agg[self.coht2])
+            .sort_values(ascending=False)
+            .index,
+            :,
+        ].reset_index(drop=True)
+
         # Filter modules with total enrolment > thres
-        #mod_agg_sorted_filter = mod_agg_sorted[[x > thres for x in (mod_agg_sorted[self.coht1] + mod_agg_sorted[self.coht2]).values]]
+        # mod_agg_sorted_filter = mod_agg_sorted[[x > thres for x in (mod_agg_sorted[self.coht1] + mod_agg_sorted[self.coht2]).values]]
 
-        mod_melted = pd.melt(mod_agg_sorted.iloc[:k,:].drop(['mod_code'],axis=1),id_vars='mod_code_hash')
+        mod_melted = pd.melt(
+            mod_agg_sorted.iloc[:k, :].drop(["mod_code"], axis=1),
+            id_vars="mod_code_hash",
+        )
 
-        mod_agg_sorted_info = mod_agg_sorted.merge(self.mod_info,on='mod_code')
+        mod_agg_sorted_info = mod_agg_sorted.merge(self.mod_info, on="mod_code")
 
         for attr in self.kept_attr:
-            mod_melted[attr] = mod_agg_sorted_info.loc[:k-1,attr].tolist()*2
+            mod_melted[attr] = mod_agg_sorted_info.loc[: k - 1, attr].tolist() * 2
 
         import plotly.express as px
-        fig = px.bar(mod_melted, x='mod_code_hash', y='value', color='variable',barmode='group',hover_data=self.kept_attr)
-        fig.update_xaxes(type='category')
-        return fig
-        #print("It is advised to clear the cache each time after running a graphing function!")
 
-    def find_most_different_modules(self,verbose=1):
-        '''
+        fig = px.bar(
+            mod_melted,
+            x="mod_code_hash",
+            y="value",
+            color="variable",
+            barmode="group",
+            hover_data=self.kept_attr,
+        )
+        fig.update_xaxes(type="category")
+        return fig
+        # print("It is advised to clear the cache each time after running a graphing function!")
+
+    def find_most_different_modules(self, verbose=1):
+        """
         Obtain the module list sorted by normalized enrolment difference between the two academic years.
         :param n: Keep top n most different modules.
-        '''
+        """
         # Modules with the largest differences
         mod_agg = self.mod_agg.copy()
-        
-        mod_agg['diff_'] = abs(mod_agg[self.coht1] - mod_agg[self.coht2])
-        mod_agg['normalized_diff'] = abs(mod_agg[self.coht1] - mod_agg[self.coht2]) / mod_agg[[self.coht1, self.coht2]].max(axis=1)
 
-        mod_code_sorted_by_diff = mod_agg[['mod_code',self.coht1,self.coht2]].iloc[(mod_agg.diff_ * mod_agg.normalized_diff).sort_values(ascending=False).index,:].reset_index(drop=True)
+        mod_agg["diff_"] = abs(mod_agg[self.coht1] - mod_agg[self.coht2])
+        mod_agg["normalized_diff"] = abs(
+            mod_agg[self.coht1] - mod_agg[self.coht2]
+        ) / mod_agg[[self.coht1, self.coht2]].max(axis=1)
+
+        mod_code_sorted_by_diff = (
+            mod_agg[["mod_code", self.coht1, self.coht2]]
+            .iloc[
+                (mod_agg.diff_ * mod_agg.normalized_diff)
+                .sort_values(ascending=False)
+                .index,
+                :,
+            ]
+            .reset_index(drop=True)
+        )
 
         mod_code_sorted_by_diff.reset_index(inplace=True)
 
         self.mod_code_sorted_by_diff = mod_code_sorted_by_diff
-        #mod_diff_melted = pd.melt(mod_code_sorted_by_diff.iloc[:n,:].drop(['mod_code'],axis=1),id_vars='index')
+        # mod_diff_melted = pd.melt(mod_code_sorted_by_diff.iloc[:n,:].drop(['mod_code'],axis=1),id_vars='index')
 
-        #sns.factorplot(x='index',y='value',hue='variable',data=mod_diff_melted,kind='bar')
-        #plt.show()
+        # sns.factorplot(x='index',y='value',hue='variable',data=mod_diff_melted,kind='bar')
+        # plt.show()
         if verbose == 1:
             print("Most different module list obtained.")
-	
-    def plot_random_student_selection_info(self,attr='mod_faculty',at_least_selecting=10, random_state=167):
+
+    def plot_random_student_selection_info(
+        self, attr="mod_faculty", at_least_selecting=10, random_state=167
+    ):
         assert attr in self.kept_attr
 
         def sample_student(ds_coht):
-            ds_of_interest = ds_coht[['student_token','mod_code']].drop_duplicates()
-            agg_stu = ds_of_interest.groupby(['student_token']).size().reset_index(name='counts')
+            ds_of_interest = ds_coht[["student_token", "mod_code"]].drop_duplicates()
+            agg_stu = (
+                ds_of_interest.groupby(["student_token"])
+                .size()
+                .reset_index(name="counts")
+            )
             filtered_stu = agg_stu[agg_stu.counts >= at_least_selecting]
-            
+
             if filtered_stu.shape[0] == 0:
-                raise ValueError('The threshold is too high.')
-            
-            selected_stu_token = filtered_stu.sample(1,random_state=random_state).student_token.values[0]
-            filtered_stu = agg_stu = ds_coht = None # clear the cache
-            selected_stu = ds_of_interest[[x == selected_stu_token for x in ds_of_interest.student_token]]['mod_code'].reset_index()
+                raise ValueError("The threshold is too high.")
+
+            selected_stu_token = filtered_stu.sample(
+                1, random_state=random_state
+            ).student_token.values[0]
+            filtered_stu = agg_stu = ds_coht = None  # clear the cache
+            selected_stu = ds_of_interest[
+                [x == selected_stu_token for x in ds_of_interest.student_token]
+            ]["mod_code"].reset_index()
             return selected_stu
 
         sample_coht1_stu_mods = sample_student(self.ds_coht1)
         sample_coht2_stu_mods = sample_student(self.ds_coht2)
 
-        stu_mod_cross1 = sample_coht1_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).size().reset_index(name='counts')
-        stu_mod_cross2 = sample_coht2_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).size().reset_index(name='counts')
+        stu_mod_cross1 = (
+            sample_coht1_stu_mods.merge(
+                self.mod_info[["mod_code", attr]], on="mod_code", how="left"
+            )
+            .drop(["index"], axis=1)
+            .groupby([attr])
+            .size()
+            .reset_index(name="counts")
+        )
+        stu_mod_cross2 = (
+            sample_coht2_stu_mods.merge(
+                self.mod_info[["mod_code", attr]], on="mod_code", how="left"
+            )
+            .drop(["index"], axis=1)
+            .groupby([attr])
+            .size()
+            .reset_index(name="counts")
+        )
 
         import plotly.express as px
 
-        fig1 = px.pie(stu_mod_cross1, values='counts', names=attr, title='Distribution in '+attr+' from '+self.coht1, labels=False)
-        fig2 = px.pie(stu_mod_cross2, values='counts', names=attr, title='Distribution in '+attr+' from '+self.coht2, labels=False)
-        fig1.update_layout(legend=dict(
+        fig1 = px.pie(stu_mod_cross1, values="counts", names=attr)
+        fig2 = px.pie(stu_mod_cross2, values="counts", names=attr)
+
+        custom_legend = dict(
             orientation="h",
             yanchor="bottom",
             y=1.02,
             xanchor="right",
             x=1,
-            font=dict(
-            size=8,
-            color="black"
-            )
-        ))
-        fig2.update_layout(legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-            font=dict(
-            size=8,
-            color="black"
-            )
-        ))
+            font=dict(size=8, color="black"),
+        )
 
-        return sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
+        custom_title1 = {
+            "text": "Distribution in " + attr + " from " + self.coht1,
+            "y": 0.9,
+            "x": 0.5,
+            "xanchor": "center",
+            "yanchor": "bottom",
+        }
 
+        custom_title2 = {
+            "text": "Distribution in " + attr + " from " + self.coht2,
+            "y": 0.9,
+            "x": 0.5,
+            "xanchor": "center",
+            "yanchor": "bottom",
+        }
+        
+        fig1.update_layout(
+            legend=custom_legend,
+            title=custom_title1
+        )
+        fig2.update_layout(
+            legend=custom_legend,
+            title=custom_title2
+        )
 
-    def plot_topk_diff_mod_info(self,k=10):
-        '''
+        return (
+            sample_coht1_stu_mods.shape[0],
+            sample_coht2_stu_mods.shape[0],
+            fig1,
+            fig2,
+        )
+
+    def plot_topk_diff_mod_info(self, k=10):
+        """
         Note that get_most_different_modules() method needs to be run first.
-        '''
+        """
         mod_diff = self.mod_code_sorted_by_diff.copy()
 
-        mod_diff_melted = pd.melt(mod_diff.iloc[:k,:].drop(['mod_code'],axis=1),id_vars='index')
+        mod_diff_melted = pd.melt(
+            mod_diff.iloc[:k, :].drop(["mod_code"], axis=1), id_vars="index"
+        )
 
-        mod_diff_info = mod_diff.merge(self.mod_info,on='mod_code')
-        
+        mod_diff_info = mod_diff.merge(self.mod_info, on="mod_code")
+
         for attr in self.kept_attr:
-            mod_diff_melted[attr] = mod_diff_info.loc[:k-1,attr].tolist()*2
+            mod_diff_melted[attr] = mod_diff_info.loc[: k - 1, attr].tolist() * 2
 
         import plotly.express as px
-        fig = px.bar(mod_diff_melted, x='index', y='value', color='variable',barmode="group",hover_data=self.kept_attr)
+
+        fig = px.bar(
+            mod_diff_melted,
+            x="index",
+            y="value",
+            color="variable",
+            barmode="group",
+            hover_data=self.kept_attr,
+        )
         return fig
-        #print("It is advised to clear the cache each time after running a graphing function!")
+        # print("It is advised to clear the cache each time after running a graphing function!")
 
     def PCAnalysis(self, n_components=5, n_iters=7, random_state=47, topkmods=10):
-        stu_mod_1 = self.ds_coht1[['student_token','mod_code']].drop_duplicates().groupby(['student_token']).agg(list).reset_index()
-        stu_mod_2 = self.ds_coht2[['student_token','mod_code']].drop_duplicates().groupby(['student_token']).agg(list).reset_index()
-        #student_set = set(stu_mod_1.student_token).intersection(set(stu_mod_2.student_token))
-        module_set = list(set(self.ds_coht1.mod_code).union(set(self.ds_coht2.mod_code)))
+        stu_mod_1 = (
+            self.ds_coht1[["student_token", "mod_code"]]
+            .drop_duplicates()
+            .groupby(["student_token"])
+            .agg(list)
+            .reset_index()
+        )
+        stu_mod_2 = (
+            self.ds_coht2[["student_token", "mod_code"]]
+            .drop_duplicates()
+            .groupby(["student_token"])
+            .agg(list)
+            .reset_index()
+        )
+        # student_set = set(stu_mod_1.student_token).intersection(set(stu_mod_2.student_token))
+        module_set = list(
+            set(self.ds_coht1.mod_code).union(set(self.ds_coht2.mod_code))
+        )
 
         stu_mod_vec_1 = list()
         stu_mod_vec_2 = list()
@@ -270,53 +434,105 @@ class CohortAnalyzer():
 
         from sklearn.decomposition import TruncatedSVD
 
-        svd1 = TruncatedSVD(n_components=n_components, n_iter=n_iters, random_state=random_state)
+        svd1 = TruncatedSVD(
+            n_components=n_components, n_iter=n_iters, random_state=random_state
+        )
         svd1.fit(stu_mod_vec_1)
 
-        svd2 = TruncatedSVD(n_components=n_components, n_iter=n_iters, random_state=random_state)
+        svd2 = TruncatedSVD(
+            n_components=n_components, n_iter=n_iters, random_state=random_state
+        )
         svd2.fit(stu_mod_vec_2)
 
-        print('SVD Model successfully trained.')
+        print("SVD Model successfully trained.")
 
         pcs_1 = svd1.components_
         pcs_2 = svd2.components_
 
-        pc_diff = np.array([0]*n_mod_list,dtype=float)
+        pc_diff = np.array([0] * n_mod_list, dtype=float)
 
         for i in range(n_components):
-            pc_diff = pc_diff + (pcs_2[i] - pcs_1[i])*(n_components-i)/sum(range(1,n_components+1))
+            pc_diff = pc_diff + (pcs_2[i] - pcs_1[i]) * (n_components - i) / sum(
+                range(1, n_components + 1)
+            )
 
-        mod_diff_svd = pd.DataFrame({'mod_code':module_set,'pc_diff':pc_diff})
-        mod_diff_svd_sorted = mod_diff_svd.iloc[mod_diff_svd.pc_diff.abs().sort_values(ascending=False).index,:]    
+        mod_diff_svd = pd.DataFrame({"mod_code": module_set, "pc_diff": pc_diff})
+        mod_diff_svd_sorted = mod_diff_svd.iloc[
+            mod_diff_svd.pc_diff.abs().sort_values(ascending=False).index, :
+        ]
 
-        mod_diff_svd_info = mod_diff_svd_sorted.merge(self.mod_info,on='mod_code').reset_index()
-                
+        mod_diff_svd_info = mod_diff_svd_sorted.merge(
+            self.mod_info, on="mod_code"
+        ).reset_index()
+
         import plotly.express as px
 
-        mod_diff_svd_info['color'] = np.where(mod_diff_svd_info.pc_diff > 0,'blue','red')
-        fig = px.bar(mod_diff_svd_info.iloc[:topkmods,:], x='index', y='pc_diff',color='color', color_discrete_map={'blue':'#636EFA','red':'#EF553B'}, hover_data={'color':False, 'mod_code':True, 'mod_faculty':True, 'grading_basis':True})
-        return mod_diff_svd_info, fig     
-        #print("It is advised to clear the cache each time after running a graphing function!")
+        mod_diff_svd_info["color"] = np.where(
+            mod_diff_svd_info.pc_diff > 0, "blue", "red"
+        )
+        fig = px.bar(
+            mod_diff_svd_info.iloc[:topkmods, :],
+            x="index",
+            y="pc_diff",
+            color="color",
+            color_discrete_map={"blue": "#636EFA", "red": "#EF553B"},
+            hover_data={
+                "color": False,
+                "mod_code": True,
+                "mod_faculty": True,
+                "grading_basis": True,
+            },
+        )
+        return mod_diff_svd_info, fig
+        # print("It is advised to clear the cache each time after running a graphing function!")
 
-    def attr_perc_change(self, attr='mod_faculty'):
-        '''
+    def attr_perc_change(self, attr="mod_faculty"):
+        """
         Plot the percentage changes in module attributes. Possible inputs are ['grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level']
         Note that get_most_different_modules() method needs to be run first.
-        '''
+        """
         assert attr in self.kept_attr
-        mod_focus = self.mod_code_sorted_by_diff.merge(self.mod_info,on='mod_code').astype({attr: 'category'})
-        mod_focus_grouped_1 = mod_focus[[self.coht1,attr]].groupby([attr]).sum()
-        mod_focus_grouped_2 = mod_focus[[self.coht2,attr]].groupby([attr]).sum()
-        
+        mod_focus = self.mod_code_sorted_by_diff.merge(
+            self.mod_info, on="mod_code"
+        ).astype({attr: "category"})
+        mod_focus_grouped_1 = mod_focus[[self.coht1, attr]].groupby([attr]).sum()
+        mod_focus_grouped_2 = mod_focus[[self.coht2, attr]].groupby([attr]).sum()
+
         mod_focus_combined = mod_focus_grouped_1.join(mod_focus_grouped_2).reset_index()
-        mod_focus_combined['enrol_percentage_cohort_1'] = (mod_focus_combined[self.coht1]) / mod_focus_combined[self.coht1].sum() * 100
-        mod_focus_combined['enrol_percentage_cohort_2'] = (mod_focus_combined[self.coht2]) / mod_focus_combined[self.coht2].sum() * 100
-        mod_focus_combined['percentage_change'] = mod_focus_combined['enrol_percentage_cohort_2'] - mod_focus_combined['enrol_percentage_cohort_1']
+        mod_focus_combined["enrol_percentage_cohort_1"] = (
+            (mod_focus_combined[self.coht1])
+            / mod_focus_combined[self.coht1].sum()
+            * 100
+        )
+        mod_focus_combined["enrol_percentage_cohort_2"] = (
+            (mod_focus_combined[self.coht2])
+            / mod_focus_combined[self.coht2].sum()
+            * 100
+        )
+        mod_focus_combined["percentage_change"] = (
+            mod_focus_combined["enrol_percentage_cohort_2"]
+            - mod_focus_combined["enrol_percentage_cohort_1"]
+        )
 
         import plotly.express as px
-        mod_focus_combined["color"] = np.where(mod_focus_combined["percentage_change"]>0, 'blue', 'red')
-        fig = px.bar(mod_focus_combined,x=attr, y='percentage_change',color='color',color_discrete_map={'blue':'#636EFA','red':'#EF553B'},hover_data={self.coht1:True,self.coht2:True,'percentage_change':':.2f'})
-        return mod_focus_combined, fig  
+
+        mod_focus_combined["color"] = np.where(
+            mod_focus_combined["percentage_change"] > 0, "blue", "red"
+        )
+        fig = px.bar(
+            mod_focus_combined,
+            x=attr,
+            y="percentage_change",
+            color="color",
+            color_discrete_map={"blue": "#636EFA", "red": "#EF553B"},
+            hover_data={
+                self.coht1: True,
+                self.coht2: True,
+                "percentage_change": ":.2f",
+            },
+        )
+        return mod_focus_combined, fig
+
 
 # class ModuleMapper:
 #     def __init__(self, module_enrolment, base_cohort, comp_cohort, faculty_name="Biz"):
@@ -330,7 +546,7 @@ class CohortAnalyzer():
 #         self.input_validation(base_cohort, comp_cohort)
 
 #         self.modules, self.base2vec, self.comp2vec = self.unique_mod(module_enrolment, base_cohort, comp_cohort)
-        
+
 #         # Module codes are all masked, thus it does not hurt to rehash the module codes which start from 0.
 #         self.rehash = dict([(self.modules.mod_code[ind],ind) for ind in range(len(self.modules.mod_code))])
 
@@ -342,17 +558,17 @@ class CohortAnalyzer():
 #         if base_cohort not in ACADEMIC_YEARS or comp_cohort not in ACADEMIC_YEARS:
 #             raise ValueError("Invalid input for the year of cohort. Should be within the range {}".format(ACADEMIC_YEARS))
 #         print("Input validated.")
-        
+
 #     def unique_mod(self, module_enrolment, base_cohort, comp_cohort):
 #         """
-#         Get the unique modules from two cohorts and desired attributes. 
+#         Get the unique modules from two cohorts and desired attributes.
 #         Yield the module enrollment vectors for both cohorts.
 #         :param module_enrolment: non-empty pandas dataframe
 #         """
 
 #         module_enrolment['basevec'] = [x/100 == base_cohort for x in module_enrolment.term]
 #         module_enrolment['compvec'] = [x/100 == comp_cohort for x in module_enrolment.term]
-        
+
 #         mods = module_enrolment[module_enrolment.basevec & module_enrolment.compvec][['mod_code','mod_faculty','mod_level',"mod_activity_type"]].drop_duplicates(subset=['mod_code'])
 #         base_vec = module_enrolment[['basevec','mod_code']].groupby(['mod_code']).agg(sum)['basevec']
 #         comp_vec = module_enrolment[['compvec','mod_code']].groupby(['mod_code']).agg(sum)['compvec']
