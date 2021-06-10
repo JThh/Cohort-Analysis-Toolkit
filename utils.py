@@ -63,11 +63,6 @@ class CohortAnalyzer():
 
         self.mod_agg = mod_agg.fillna(0)
         self.mod_agg['mod_code_hash'] = list(range(mod_agg.shape[0]))
-    
-    def unload_dataframes():
-
-        from streamlit import caching
-        caching.clear_cache()
 
     def get_student_and_module_count(self):
         return self.ds_coht1.student_token.nunique(), self.ds_coht2.student_token.nunique(), self.ds_coht1.mod_code.nunique(), self.ds_coht2.mod_code.nunique()
@@ -184,12 +179,16 @@ class CohortAnalyzer():
         assert attr in self.kept_attr
 
         def sample_student(ds_coht):
-            agg_stu = ds_coht[['student_token','mod_code']].groupby(['student_token']).size().reset_index(name='counts')
+            ds_of_interest = ds_coht[['student_token','mod_code']].drop_duplicates()
+            agg_stu = ds_of_interest.groupby(['student_token']).size().reset_index(name='counts')
             filtered_stu = agg_stu[agg_stu.counts >= at_least_selecting]
-            agg_stu = None
+            
+            if filtered_stu.shape[0] == 0:
+                raise ValueError('The threshold is too high.')
+            
             selected_stu_token = filtered_stu.sample(1).student_token.values[0]
-            filtered_stu = None
-            selected_stu = ds_coht[[x == selected_stu_token for x in ds_coht.student_token]]['mod_code'].reset_index()
+            filtered_stu = agg_stu = ds_coht = None # clear the cache
+            selected_stu = ds_of_interest[[x == selected_stu_token for x in ds_coht.student_token]]['mod_code'].reset_index()
             return selected_stu_token, selected_stu
 
         sample_coht1_stu_token, sample_coht1_stu_mods = sample_student(self.ds_coht1)
@@ -200,8 +199,8 @@ class CohortAnalyzer():
 
         import plotly.express as px
 
-        fig1 = px.pie(stu_mod_cross1, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht1)
-        fig2 = px.pie(stu_mod_cross2, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2)
+        fig1 = px.pie(stu_mod_cross1, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht1, labels=False)
+        fig2 = px.pie(stu_mod_cross2, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2, labels=False)
 
         return sample_coht1_stu_token, sample_coht2_stu_token, sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
 
