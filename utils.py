@@ -438,24 +438,24 @@ class CohortAnalyzer:
         svd1 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
-        svd1.fit(stu_mod_vec_1)
+        embeddings_1 = svd1.fit_transform(stu_mod_vec_1)
 
         svd2 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
-        svd2.fit(stu_mod_vec_2)
+        embeddings_2 = svd2.fit_transform(stu_mod_vec_2)
 
         print("SVD Model successfully trained.")
 
         components_1 = svd1.components_
         components_2 = svd2.components_
 
-        label1 = {
+        label_1 = {
             str(i): f"PC {i+1} ({var:.1f}%)"
             for i, var in enumerate(svd1.explained_variance_ratio_ * 100)
         }
 
-        label2 = {
+        label_2 = {
             str(i): f"PC {i+1} ({var:.1f}%)"
             for i, var in enumerate(svd2.explained_variance_ratio_ * 100)
         }
@@ -463,15 +463,15 @@ class CohortAnalyzer:
         import plotly.express as px
 
         pca_fig1 = px.scatter_matrix(
-            components_1,
-            labels=label1,
+            embeddings_1,
+            labels=label_1,
             dimensions=range(n_components),
         )
         pca_fig1.update_traces(diagonal_visible=False)        
 
         pca_fig2 = px.scatter_matrix(
-            components_2,
-            labels=label2,
+            embeddings_2,
+            labels=label_2,
             dimensions=range(n_components),
         )
         pca_fig2.update_traces(diagonal_visible=False)        

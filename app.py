@@ -281,7 +281,7 @@ with st.beta_expander("Principal component analysis"):
     #         n_components=n_components, topkmods=k_mods
     #     )
 
-    mod_pc_diff, fig, pca_fig1, pca_fig2 = analyzer.PCAnalysis(n_components=n_components, topkmods=k_mods)
+    mod_pc_diff, pca_fig1, pca_fig2, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=k_mods)
 
     col1, col2 = st.beta_columns(2)
     with col1:
