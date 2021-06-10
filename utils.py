@@ -337,12 +337,14 @@ class CohortAnalyzer:
 
         custom_title1 = {
             "text": "Distribution in " + attr + " from " + self.coht1,
+            "y": 0,
             "xanchor": "center",
             "yanchor": "bottom",
         }
 
         custom_title2 = {
             "text": "Distribution in " + attr + " from " + self.coht2,
+            "y": 0,
             "xanchor": "center",
             "yanchor": "bottom",
         }
