@@ -157,7 +157,7 @@ class CohortAnalyzer():
         return fig
         #print("It is advised to clear the cache each time after running a graphing function!")
 
-    def find_most_different_modules(self):
+    def find_most_different_modules(self,verbose=1):
         '''
         Obtain the module list sorted by normalized enrolment difference between the two academic years.
         :param n: Keep top n most different modules.
@@ -177,13 +177,14 @@ class CohortAnalyzer():
 
         #sns.factorplot(x='index',y='value',hue='variable',data=mod_diff_melted,kind='bar')
         #plt.show()
-        print("Most different module list obtained.")
+        if verbose == 1:
+            print("Most different module list obtained.")
 	
     def plot_random_student_selection_info(self,attr='mod_faculty',at_least_selecting=10):
         assert attr in self.kept_attr
 
         def sample_student(ds_coht):
-            agg_stu = ds_coht[['student_token','mod_code']].groupby(['student_token']).apply(count).rename({'mod_code':'count'},axis=1).reset_index()
+            agg_stu = ds_coht[['student_token','mod_code']].groupby(['student_token']).size().reset_index(name='count')
             filtered_stu = agg_stu[agg_stu.count >= at_least_selecting]
             agg_stu = None
             selected_stu_token = filtered_stu.sample(1).student_token
@@ -194,8 +195,8 @@ class CohortAnalyzer():
         sample_coht1_stu_token, sample_coht1_stu_mods = sample_student(self.ds_coht1)
         sample_coht2_stu_token, sample_coht2_stu_mods = sample_student(self.ds_coht2)
 
-        stu_mod_cross1 = sample_coht1_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).apply(count).reset_index()
-        stu_mod_cross2 = sample_coht2_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).apply(count).reset_index()
+        stu_mod_cross1 = sample_coht1_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).size().reset_index(name='count')
+        stu_mod_cross2 = sample_coht2_stu_mods.merge(self.mod_info[['mod_code',attr]], on="mod_code", how="left").drop(['index'],axis=1).groupby([attr]).size().reset_index(name='count')
 
         import plotly.express as px
 
