@@ -29,6 +29,7 @@ FACULTY_MAP = {
 # IMAGE_PATH = 'icon.png'
 ######################################################################################
 
+st.set_page_config(layout="wide")
 
 st.title("Cohort Analysis of Module Selection")
 st.markdown("_Designed by UROP Student Han Jiatong_ | NUS WING Group")
@@ -281,14 +282,9 @@ with st.beta_expander("Principal component analysis"):
     #         n_components=n_components, topkmods=k_mods
     #     )
 
-    mod_pc_diff, pca_fig1, pca_fig2, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=k_mods)
+    mod_pc_diff, pca_fig, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=k_mods)
 
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        st.plotly_chart(pca_fig1, use_container_width=True)
-    
-    with col2:
-        st.plotly_chart(pca_fig2, use_container_width=True)
+    st.plotly_chart(pca_fig, use_container_width=True)
         
     st.subheader("Dataframe Results:")
     st.dataframe(mod_pc_diff.sample(30).reset_index(drop=True))

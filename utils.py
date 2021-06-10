@@ -197,7 +197,7 @@ class CohortAnalyzer:
         #     print("There isn't significant difference in the selection variances between two cohorts.")
 
         return map(
-            lambda x: float("{:.2f}".format(x)),
+            lambda x: float("{:.3f}".format(x)),
             (t_sta_ttest, p_value_ttest, t_sta_oneway, p_value_oneway),
         )
 
@@ -345,7 +345,7 @@ class CohortAnalyzer:
         custom_title1 = {
             "text": self.coht1,
             "x": 0.5,
-            "y": 0.2,
+            "y": 0.1,
             "xanchor": "center",
             "yanchor": "bottom",
         }
@@ -353,7 +353,7 @@ class CohortAnalyzer:
         custom_title2 = {
             "text": self.coht2,
             "x": 0.5,
-            "y": 0.2,
+            "y": 0.1,
             "xanchor": "center",
             "yanchor": "bottom",
         }
@@ -438,43 +438,36 @@ class CohortAnalyzer:
         svd1 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
-        embeddings_1 = svd1.fit_transform(stu_mod_vec_1)
+        embeddings_1 = pd.DataFrame(svd1.fit_transform(stu_mod_vec_1))
+        embeddings_1['cohort'] = 'Cohort1'
 
         svd2 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
-        embeddings_2 = svd2.fit_transform(stu_mod_vec_2)
+        embeddings_2 = pd.DataFrame(svd2.fit_transform(stu_mod_vec_2))
+        embeddings_2['cohort'] = 'Cohort2'
+
+
+        embeddings = pd.concat(embeddings_1, embeddings_2)
 
         print("SVD Model successfully trained.")
 
         components_1 = svd1.components_
         components_2 = svd2.components_
 
-        label_1 = {
-            str(i): f"PC {i+1} ({var:.1f}%)"
-            for i, var in enumerate(svd1.explained_variance_ratio_ * 100)
-        }
-
-        label_2 = {
-            str(i): f"PC {i+1} ({var:.1f}%)"
-            for i, var in enumerate(svd2.explained_variance_ratio_ * 100)
+        label = {
+            str(i): f"PC {i+1}"
+            for i in range(n_components)
         }
 
         import plotly.express as px
 
-        pca_fig1 = px.scatter_matrix(
-            embeddings_1,
-            labels=label_1,
+        pca_fig = px.scatter_matrix(
+            embeddings,
+            labels=label,
             dimensions=range(n_components),
         )
-        pca_fig1.update_traces(diagonal_visible=False)        
-
-        pca_fig2 = px.scatter_matrix(
-            embeddings_2,
-            labels=label_2,
-            dimensions=range(n_components),
-        )
-        pca_fig2.update_traces(diagonal_visible=False)        
+        pca_fig.update_traces(diagonal_visible=False)              
 
         pc_diff = np.array([0] * n_mod_list, dtype=float)
 
@@ -508,7 +501,7 @@ class CohortAnalyzer:
                 "grading_basis": True,
             },
         )
-        return mod_diff_svd_info, pca_fig1, pca_fig2, fig
+        return mod_diff_svd_info, pca_fig, fig
         # print("It is advised to clear the cache each time after running a graphing function!")
 
     def attr_perc_change(self, attr="mod_faculty"):
