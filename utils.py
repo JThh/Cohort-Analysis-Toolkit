@@ -175,7 +175,7 @@ class CohortAnalyzer():
         if verbose == 1:
             print("Most different module list obtained.")
 	
-    def plot_random_student_selection_info(self,attr='mod_faculty',at_least_selecting=10):
+    def plot_random_student_selection_info(self,attr='mod_faculty',at_least_selecting=10, random_state=167):
         assert attr in self.kept_attr
 
         def sample_student(ds_coht):
@@ -186,7 +186,7 @@ class CohortAnalyzer():
             if filtered_stu.shape[0] == 0:
                 raise ValueError('The threshold is too high.')
             
-            selected_stu_token = filtered_stu.sample(1).student_token.values[0]
+            selected_stu_token = filtered_stu.sample(1,random_state=random_state).student_token.values[0]
             filtered_stu = agg_stu = ds_coht = None # clear the cache
             selected_stu = ds_of_interest[[x == selected_stu_token for x in ds_of_interest.student_token]]['mod_code'].reset_index()
             return selected_stu
