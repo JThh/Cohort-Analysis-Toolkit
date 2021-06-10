@@ -115,12 +115,12 @@ with st.beta_expander("Module enrolment difference analysis"):
   col1, col2 = st.beta_columns(2)
 
   with col1:
-    seed = st.number_input('Choose a random state',value=167,help='Choose a random state to sample students; default 167')
-    st.write(seed,'selected')
+    min_num_mods = st.slider('Minimum number of modules taken',min_value=0,max_value=16,value=10)
+    st.write(min_num_mods,'selected')
 
   with col2:
-    min_num_mods = st.number_input('Minimum number of modules taken',min_value=0,max_value=16)
-    st.write(min_num_mods,'selected')
+    seed = st.number_input('Choose a random state',value=167,help='Choose a random state to sample students; default 167')
+    st.write(seed,'selected')
 
   rand_stu_num_of_mod1, rand_stu_num_of_mod2, fig1, fig2 = analyzer.plot_random_student_selection_info(attr=attr_input,at_least_selecting=min_num_mods,random_state=seed)
   st.write('Analyzer is ready.')
