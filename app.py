@@ -261,10 +261,10 @@ with st.beta_expander("Principal component analysis"):
     col1, col2 = st.beta_columns(2)
     with col1:
         n_components = st.number_input(
-            "Number of components to keep: (Default 2)",
+            "Number of components to keep: (Default 4)",
             min_value=2,
             max_value=10,
-            value=2,
+            value=4,
         )
         st.write(n_components, "PCs are selected")
     with col2:
