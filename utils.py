@@ -187,7 +187,7 @@ class CohortAnalyzer():
             agg_stu = ds_coht[['student_token','mod_code']].groupby(['student_token']).size().reset_index(name='counts')
             filtered_stu = agg_stu[agg_stu.counts >= at_least_selecting]
             agg_stu = None
-            selected_stu_token = filtered_stu.sample(1).student_token
+            selected_stu_token = filtered_stu.sample(1).student_token.values[0]
             filtered_stu = None
             selected_stu = ds_coht[[x == selected_stu_token for x in ds_coht.student_token]]['mod_code'].reset_index()
             return selected_stu_token, selected_stu
