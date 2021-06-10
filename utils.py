@@ -203,7 +203,7 @@ class CohortAnalyzer():
 		fig2 = px.pie(stu_mod_cross2, values='mod_code', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2)
 
 		return sample_coht1_stu_token, sample_coht2_stu_token, sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
-		
+
 
     def plot_topk_diff_mod_info(self,k=10):
         '''
