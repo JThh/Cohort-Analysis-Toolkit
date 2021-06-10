@@ -199,10 +199,30 @@ class CohortAnalyzer():
 
         import plotly.express as px
 
-        fig1 = px.pie(stu_mod_cross1, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht1, labels=False)
-        fig2 = px.pie(stu_mod_cross2, values='counts', names=attr, title='Sample student module distribution in '+attr+' from '+self.coht2, labels=False)
-        fig1.layout.update(showlegend=False)
-        fig2.layout.update(showlegend=False)
+        fig1 = px.pie(stu_mod_cross1, values='counts', names=attr, title='Distribution in '+attr+' from '+self.coht1, labels=False)
+        fig2 = px.pie(stu_mod_cross2, values='counts', names=attr, title='Distribution in '+attr+' from '+self.coht2, labels=False)
+        fig1.update_layout(legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(
+            size=8,
+            color="black"
+            )
+        ))
+        fig2.update_layout(legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(
+            size=8,
+            color="black"
+            )
+        ))
 
         return sample_coht1_stu_mods.shape[0], sample_coht2_stu_mods.shape[0], fig1, fig2		
 
