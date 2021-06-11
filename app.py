@@ -62,7 +62,8 @@ selected_faculty = st.multiselect(
 )
 
 # st.write('You selected',selected_faculty)
-
+if not selected_faculty:
+    st.warning("At least select one faculty!")
 
 module = pd.read_csv(PATH_MOD)
 module = module[[x in selected_faculty for x in module.Faculty]]
