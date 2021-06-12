@@ -1,8 +1,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from PIL import Image
+# import matplotlib.pyplot as plt
+# from PIL import Image
 
 from utils import CohortAnalyzer  # , ExcelDataReader
 
@@ -49,7 +49,7 @@ with st.sidebar.beta_expander("Notes"):
                       """
     )
 st.sidebar.markdown(
-    """_Version 1.1.0 | June 4th 2021_""".format(unsafe_allow_html=True)
+    """_Version 1.3.0 | June 12nd 2021_""".format(unsafe_allow_html=True)
 )
 
 
@@ -73,19 +73,23 @@ student = student[[x in selected_faculty for x in student.faculty_descr]]
 col1, col2 = st.beta_columns(2)
 
 with col1:
-    cohort1 = st.number_input("Select a cohort to compare", min_value=10, max_value=18)
+    cohort1 = st.number_input("Select a cohort to compare (10-14)", min_value=10, max_value=14)
     st.write(cohort1, "selected")
 
 with col2:
     cohort2 = st.number_input(
         "Select another cohort to compare with cohort1",
         min_value=cohort1 + 1,
-        max_value=18,
+        max_value=15,
         help="preferably larger than" + str(cohort1),
     )
     st.write(cohort2, "selected")
 
-analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
+try:
+    analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
+except:
+    st.error("Analyzer loading error. Please try again or select different cohorts to compare!")
+
 st.write("Cohort Analyzer installed and ready.")
 
 with st.beta_expander("Processed Dataframe"):
