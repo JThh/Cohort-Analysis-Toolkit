@@ -320,11 +320,11 @@ with st.beta_expander("Attribute percentage analysis"):
     col1, col2 = st.beta_columns(2)
 
     with col1:
-        st.subheader('Cohort '+cohort1)
+        st.subheader('Cohort '+str(cohort1))
         st.plotly_chart(fig1, use_container_width=True)
 
     with col2:
-        st.subheader('Cohort '+cohort2)
+        st.subheader('Cohort '+str(cohort2))
         st.plotly_chart(fig2, use_container_width=True)
     
     st.write('Delta Entropy:',ent2 - ent1)
