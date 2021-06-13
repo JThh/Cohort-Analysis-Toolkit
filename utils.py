@@ -528,6 +528,11 @@ class CohortAnalyzer:
         mod_focus_grouped_1 = mod_focus[[self.coht1, attr]].groupby([attr]).sum()
         mod_focus_grouped_2 = mod_focus[[self.coht2, attr]].groupby([attr]).sum()
 
+        import plotly.express as px
+
+        fig1 = px.pie(mod_focus_grouped_1.reset_index(), names=attr, values=self.coht1)
+        fig2 = px.pie(mod_focus_grouped_2.reset_index(), names=attr, values=self.coht1)
+
         mod_focus_combined = mod_focus_grouped_1.join(mod_focus_grouped_2).reset_index()
         mod_focus_combined["enrol_percentage_cohort_1"] = (
             (mod_focus_combined[self.coht1])
@@ -539,12 +544,11 @@ class CohortAnalyzer:
             / mod_focus_combined[self.coht2].sum()
             * 100
         )
+
         mod_focus_combined["percentage_change"] = (
             mod_focus_combined["enrol_percentage_cohort_2"]
             - mod_focus_combined["enrol_percentage_cohort_1"]
         )
-
-        import plotly.express as px
 
         mod_focus_combined["color"] = np.where(
             mod_focus_combined["percentage_change"] > 0, "blue", "red"
@@ -561,7 +565,7 @@ class CohortAnalyzer:
                 "percentage_change": ":.2f",
             },
         )
-        return mod_focus_combined, fig
+        return mod_focus_combined, fig1, fig2, fig
 
 
 # class ModuleMapper:
