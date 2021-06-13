@@ -531,7 +531,7 @@ class CohortAnalyzer:
         import plotly.express as px
 
         fig1 = px.pie(mod_focus_grouped_1.reset_index(), names=attr, values=self.coht1)
-        fig2 = px.pie(mod_focus_grouped_2.reset_index(), names=attr, values=self.coht1)
+        fig2 = px.pie(mod_focus_grouped_2.reset_index(), names=attr, values=self.coht2)
 
         mod_focus_combined = mod_focus_grouped_1.join(mod_focus_grouped_2).reset_index()
         mod_focus_combined["enrol_percentage_cohort_1"] = (
