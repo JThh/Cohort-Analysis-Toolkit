@@ -533,7 +533,7 @@ class CohortAnalyzer:
         mod_focus_grouped_2 = mod_focus[[self.coht2, attr]].groupby([attr]).sum()
 
         def entropy(lst):
-            if not lst:
+            if len(lst) == 0:
                 raise ValueError("No value passed")
             else:
                 accu = 0
