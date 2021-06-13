@@ -6,6 +6,7 @@ import pandas as pd
 
 from utils import CohortAnalyzer  # , ExcelDataReader
 
+
 ############################### STRICTLY CONFIDENTIAL ################################
 DRIVE_URL_MOD = (
     "https://drive.google.com/file/d/1--KTK4vU5cA1akMGcIsHBmfo3FVfJSdp/view?usp=sharing"
@@ -28,6 +29,7 @@ FACULTY_MAP = {
 # FILE_NAME_STU = 'programs.csv'
 # IMAGE_PATH = 'icon.png'
 ######################################################################################
+
 
 st.set_page_config(layout="wide")
 
