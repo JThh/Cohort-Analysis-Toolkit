@@ -432,8 +432,8 @@ class CohortAnalyzer:
             for mod in row[1].mod_code:
                 vec[module_set.index(mod)] = 1
             stu_mod_vec_2.append(vec)
-        
-        stu_mod_1 = stu_mod_2 = None # Clear the cache
+
+        stu_mod_1 = stu_mod_2 = None  # Clear the cache
 
         from sklearn.decomposition import TruncatedSVD
 
@@ -441,15 +441,19 @@ class CohortAnalyzer:
             n_components=n_components, n_iter=n_iters, random_state=random_state
         )
 
-        stacked_cohort_vec = pd.concat([pd.DataFrame(stu_mod_vec_1),pd.DataFrame(stu_mod_vec_2)],ignore_index=True)
-        stacked_cohort_vec['cohort'] = [self.coht1] * len(stu_mod_vec_1) + [self.coht2] * len(stu_mod_vec_2)
-        
-        embeddings = svd.fit_transform(stacked_cohort_vec.iloc[:,:-1])
+        stacked_cohort_vec = pd.concat(
+            [pd.DataFrame(stu_mod_vec_1), pd.DataFrame(stu_mod_vec_2)],
+            ignore_index=True,
+        )
+        stacked_cohort_vec["cohort"] = [self.coht1] * len(stu_mod_vec_1) + [
+            self.coht2
+        ] * len(stu_mod_vec_2)
+
+        embeddings = svd.fit_transform(stacked_cohort_vec.iloc[:, :-1])
 
         label = {
             str(i): "PC {} ({:.1f}%)".format(
-                i + 1,
-                svd.explained_variance_ratio_[i] * 100
+                i + 1, svd.explained_variance_ratio_[i] * 100
             )
             for i in range(n_components)
         }
@@ -464,7 +468,7 @@ class CohortAnalyzer:
         )
         pca_fig.update_traces(diagonal_visible=False)
 
-        svd = embeddings = None #Clear the cache
+        svd = embeddings = None  # Clear the cache
 
         svd1 = TruncatedSVD(
             n_components=n_components, n_iter=n_iters, random_state=random_state
@@ -476,7 +480,7 @@ class CohortAnalyzer:
         )
         svd2.fit(stu_mod_vec_2)
 
-        #print("SVD Model successfully trained.")
+        # print("SVD Model successfully trained.")
 
         components_1 = svd1.components_
         components_2 = svd2.components_
@@ -528,10 +532,35 @@ class CohortAnalyzer:
         mod_focus_grouped_1 = mod_focus[[self.coht1, attr]].groupby([attr]).sum()
         mod_focus_grouped_2 = mod_focus[[self.coht2, attr]].groupby([attr]).sum()
 
+        def entropy(lst):
+            if not lst:
+                raise ValueError("No value passed")
+            else:
+                accu = 0
+                for x in lst:
+                    assert x > 0 and x < 1
+                    accu += -x*np.log2(x)
+                return accu
+
+        entropy1 = entropy((mod_focus_grouped_1[self.coht1]/(mod_focus_grouped_1[self.coht1]).sum()).values)
+        entropy2 = entropy((mod_focus_grouped_2[self.coht2]/(mod_focus_grouped_2[self.coht2]).sum()).values)
+
         import plotly.express as px
 
         fig1 = px.pie(mod_focus_grouped_1.reset_index(), names=attr, values=self.coht1)
         fig2 = px.pie(mod_focus_grouped_2.reset_index(), names=attr, values=self.coht2)
+
+        custom_legend = dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(size=12, color="black"),
+        )
+
+        fig1.update_layout(legend=custom_legend)
+        fig2.update_layout(legend=custom_legend)
 
         mod_focus_combined = mod_focus_grouped_1.join(mod_focus_grouped_2).reset_index()
         mod_focus_combined["enrol_percentage_cohort_1"] = (
@@ -565,7 +594,7 @@ class CohortAnalyzer:
                 "percentage_change": ":.2f",
             },
         )
-        return mod_focus_combined, fig1, fig2, fig
+        return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig
 
 
 # class ModuleMapper:

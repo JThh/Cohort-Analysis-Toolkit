@@ -311,7 +311,7 @@ with st.beta_expander("Attribute percentage analysis"):
     st.write("You selected", attr)
 
     with st.echo():
-        mod_attr_perc_change, fig1, fig2, fig = analyzer.attr_perc_change(attr=attr)
+        mod_attr_perc_change, ent1, ent2, fig1, fig2, fig = analyzer.attr_perc_change(attr=attr)
 
     #   st.subheader("Dataframe Results:")
     #   st.dataframe(mod_attr_perc_change)
@@ -320,12 +320,14 @@ with st.beta_expander("Attribute percentage analysis"):
     col1, col2 = st.beta_columns(2)
 
     with col1:
-        st.subheader('Cohort',cohort1)
+        st.subheader('Cohort '+cohort1)
         st.plotly_chart(fig1, use_container_width=True)
 
     with col2:
-        st.subheader('Cohort',cohort2)
+        st.subheader('Cohort '+cohort2)
         st.plotly_chart(fig2, use_container_width=True)
+    
+    st.write('Delta Entropy:',ent2 - ent1)
 
     st.subheader("Plot the percentage difference for {}:".format(attr))
     st.plotly_chart(fig, use_container_width=True)
