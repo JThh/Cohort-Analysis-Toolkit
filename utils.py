@@ -19,29 +19,14 @@ EMROLMENT_ATTRIBUTES = [
     "mod_activity_type",
     "mod_level",
 ]
-STUDENT_ATTRIBUTES = ["student_token", "term", "academic_career", "admit_term"]
+STUDENT_ATTRIBUTES = [
+    "student_token",
+    "term",
+    "academic_career",
+    "admit_term",
+    "academic_plan_descr",
+]
 ######################################################
-
-# class ExcelDataReader():
-#     def __init__(self, path, sheet_name, range_from, range_to, index=False, header=True):
-#         '''
-#         Assume that pandas is already import as pd; xlwings has already been imported as xw.
-#         :param range_from: the cell from which records are read.
-#         :param range_to: the cell to which records are read.
-#         '''
-#         self.path = path
-#         self.sheet_name = sheet_name
-#         self.range_from = range_from
-#         self.range_to = range_to
-#         wb = xw.Book(path)
-
-#         sheet = wb.sheets[sheet_name]
-#         self._dataframe = sheet[range_from+':'+range_to].options(pd.DataFrame, index=index, header=header).value
-#         print('Data successfully loaded')
-
-#     @property
-#     def dataframe(self):
-#         return self._dataframe
 
 
 class CohortAnalyzer:
@@ -65,14 +50,14 @@ class CohortAnalyzer:
             how="left",
         )
 
-        self.ds_coht1 = mod_enrol[
+        self.ds_coht1 = mod_stu_cross[
             [
                 int(row.term / 100) == int(row.admit_term / 100) == coht1
                 and row.academic_career == "UGRD"
                 for row in mod_stu_cross.itertuples()
             ]
         ]
-        self.ds_coht2 = mod_enrol[
+        self.ds_coht2 = mod_stu_cross[
             [
                 int(row.term / 100) == int(row.admit_term / 100) == coht2
                 and row.academic_career == "UGRD"
@@ -105,6 +90,10 @@ class CohortAnalyzer:
         self.mod_agg = mod_agg.fillna(0)
         self.mod_agg["mod_code_hash"] = list(range(mod_agg.shape[0]))
 
+    @property
+    def _mod_agg(self):
+        return self.mod_agg
+
     def get_student_and_module_count(self):
         return (
             self.ds_coht1.student_token.nunique(),
@@ -113,10 +102,6 @@ class CohortAnalyzer:
             self.ds_coht2.mod_code.nunique(),
         )
 
-    @property
-    def _mod_agg(self):
-        return self.mod_agg
-
     def integrate_module_information(self):
         self.kept_attr = [
             "mod_code",
@@ -124,6 +109,7 @@ class CohortAnalyzer:
             "mod_faculty",
             "mod_activity_type",
             "mod_level",
+            "mod_department",
         ]
         for attr in self.kept_attr:
             assert attr in self.mod_enrol.columns
@@ -135,8 +121,11 @@ class CohortAnalyzer:
                 "mod_faculty": max,
                 "mod_activity_type": set,
                 "mod_level": max,
+                "mod_department": max,  # Assume no module belongs to multiple departments
             }
         )
+
+        mod_info = None  # Release the memory.
 
         def filter_out_empty(lst):
             try:
@@ -152,7 +141,8 @@ class CohortAnalyzer:
             .apply(",".join)
         )
 
-        def gradingBasis(string):
+        # Rules of cleaning grading basis.
+        def clean_grading_basis(string):
             if "CSU" in string:
                 return "CSU"
             elif "SNU" in string:
@@ -162,9 +152,40 @@ class CohortAnalyzer:
             else:
                 return "NON"
 
-        mod_info_agg["grading_basis"] = mod_info_agg["grading_basis"].apply(
-            gradingBasis
+        mod_info_agg.loc[:, "grading_basis"] = mod_info_agg.loc[
+            :, "grading_basis"
+        ].apply(clean_grading_basis)
+
+        faculty_x_department = (
+            mod_info_agg[["mod_department", "mod_faculty"]]
+            .groupby(["mod_faculty"])
+            .agg({"mod_department": set})
+            .reset_index()
         )
+
+        faculty_x_department["mod_dep_rehash"] = [
+            map(
+                lambda x: x.mod_faculty + "-dep" + str(x),
+                list(range(len(x.mod_department))),
+            )
+            for x in faculty_x_department.itertuples()
+        ]
+
+        faculty_x_department["mod_dep_mapping"] = [
+            dict(zip(list(x.mod_department), x.mod_dep_rehash))
+            for x in faculty_x_department.itertuples()
+        ]
+
+        departments_map = dict()
+
+        for mapping in faculty_x_department.mod_dep_mapping:
+            departments_map.update(mapping)
+
+        faculty_x_department = None
+
+        mod_info_agg.loc[:, "mod_department"] = mod_info_agg.loc[
+            :, "mod_department"
+        ].apply(lambda x: departments_map[x])
 
         self.mod_info = mod_info_agg.reset_index()
         print("Module information successfully integrated.")
@@ -539,11 +560,21 @@ class CohortAnalyzer:
                 accu = 0
                 for x in lst:
                     assert x > 0 and x < 1
-                    accu += -x*np.log2(x)
+                    accu += -x * np.log2(x)
                 return accu
 
-        entropy1 = entropy((mod_focus_grouped_1[self.coht1]/(mod_focus_grouped_1[self.coht1]).sum()).values)
-        entropy2 = entropy((mod_focus_grouped_2[self.coht2]/(mod_focus_grouped_2[self.coht2]).sum()).values)
+        entropy1 = entropy(
+            (
+                mod_focus_grouped_1[self.coht1]
+                / (mod_focus_grouped_1[self.coht1]).sum()
+            ).values
+        )
+        entropy2 = entropy(
+            (
+                mod_focus_grouped_2[self.coht2]
+                / (mod_focus_grouped_2[self.coht2]).sum()
+            ).values
+        )
 
         import plotly.express as px
 
@@ -595,6 +626,29 @@ class CohortAnalyzer:
             },
         )
         return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig
+
+    # def 
+
+# class ExcelDataReader():
+#     def __init__(self, path, sheet_name, range_from, range_to, index=False, header=True):
+#         '''
+#         Assume that pandas is already import as pd; xlwings has already been imported as xw.
+#         :param range_from: the cell from which records are read.
+#         :param range_to: the cell to which records are read.
+#         '''
+#         self.path = path
+#         self.sheet_name = sheet_name
+#         self.range_from = range_from
+#         self.range_to = range_to
+#         wb = xw.Book(path)
+
+#         sheet = wb.sheets[sheet_name]
+#         self._dataframe = sheet[range_from+':'+range_to].options(pd.DataFrame, index=index, header=header).value
+#         print('Data successfully loaded')
+
+#     @property
+#     def dataframe(self):
+#         return self._dataframe
 
 
 # class ModuleMapper:
