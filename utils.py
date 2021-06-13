@@ -165,15 +165,15 @@ class CohortAnalyzer:
 
         faculty_x_department["mod_dep_rehash"] = [
             map(
-                lambda x: x.mod_faculty + "-dep" + str(x),
-                list(range(len(x.mod_department))),
+                lambda n: row.mod_faculty + "-dep" + str(n),
+                list(range(len(row.mod_department))),
             )
-            for x in faculty_x_department.itertuples()
+            for row in faculty_x_department.itertuples()
         ]
 
         faculty_x_department["mod_dep_mapping"] = [
-            dict(zip(list(x.mod_department), x.mod_dep_rehash))
-            for x in faculty_x_department.itertuples()
+            dict(zip(list(row.mod_department), row.mod_dep_rehash))
+            for row in faculty_x_department.itertuples()
         ]
 
         departments_map = dict()
