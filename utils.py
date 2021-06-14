@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 # import matplotlib.pyplot as plt
 # import seaborn as sns
 
@@ -90,19 +91,25 @@ class CohortAnalyzer:
         self.mod_agg = mod_agg.fillna(0)
         self.mod_agg["mod_code_hash"] = list(range(mod_agg.shape[0]))
 
-        academic_plan_list = mod_stu_cross.academic_plan_descr.unique()
+        self.stu_attr_of_interest = "academic_plan_descr"
 
-        academic_plan_perc = (
-            mod_stu_cross.academic_plan_descr.value_counts() / mod_stu_cross.shape[0]
+        academic_plan_list = sorted(
+            set(self.ds_coht1.academic_plan_descr.values).intersection(
+                set(self.ds_coht2.academic_plan_descr.values)
+            ),
+            reverse=True,
+            key=lambda x: pd.concat(
+                [self.ds_coht1, self.ds_coht2]
+            ).academic_plan_descr.value_counts[x],
         )
 
-        #Threshold value for selecting student academic plan list
-        self.acad_plan_thres = 0.1
-        self.academic_plans = academic_plan_list[
-            [academic_plan_perc[x] > self.acad_plan_thres for x in academic_plan_list]
-        ]
+        # academic_plan_perc = (
+        #     mod_stu_cross.academic_plan_descr.value_counts() / mod_stu_cross.shape[0]
+        # )
 
-        self.student_attribute_of_interest = "academic_plan_descr"
+        # Threshold value for selecting student academic plan list
+        self.acad_plan_thres = 6
+        self.academic_plans = academic_plan_list[: self.acad_plan_thres]
 
     @property
     def _mod_agg(self):
@@ -565,50 +572,42 @@ class CohortAnalyzer:
         Note that get_most_different_modules() method needs to be run first.
         """
         if not mod_attr:
-            raise ValueError('Please select a module attribute')
+            raise ValueError("Please select a module attribute")
 
         # assert mod_attr in self.kept_attr and stu_attr in self.academic_plans
 
         ds_coht1 = ds_coht2 = ds_coht1_grouped = ds_coht2_grouped = pd.DataFrame()
 
         if stu_attr:
-            ds_coht1 = (
-                self.ds_coht1.loc[
-                    self.ds_coht1[self.student_attribute_of_interest] == stu_attr, :
-                ]
-            )
-            ds_coht2 = (
-                self.ds_coht2.loc[
-                    self.ds_coht2[self.student_attribute_of_interest] == stu_attr, :
-                ]
-            )
+            ds_coht1 = self.ds_coht1.loc[
+                self.ds_coht1[self.stu_attr_of_interest] == stu_attr, :
+            ]
+            ds_coht2 = self.ds_coht2.loc[
+                self.ds_coht2[self.stu_attr_of_interest] == stu_attr, :
+            ]
         else:
             ds_coht1 = self.ds_coht1
             ds_coht2 = self.ds_coht2
 
-        ds_coht1 = (
-            ds_coht1
-            .drop(self.kept_attr[1:], axis=1)
-            .merge(self.mod_info, on="mod_code")
+        ds_coht1 = ds_coht1.drop(self.kept_attr[1:], axis=1).merge(
+            self.mod_info, on="mod_code"
         )
-        ds_coht2 = (
-            ds_coht2
-            .drop(self.kept_attr[1:], axis=1)
-            .merge(self.mod_info, on="mod_code")
+        ds_coht2 = ds_coht2.drop(self.kept_attr[1:], axis=1).merge(
+            self.mod_info, on="mod_code"
         )
 
         ds_coht1_grouped = (
             ds_coht1[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            .rename({"count": self.coht1},axis=1)
+            .rename({"count": self.coht1}, axis=1)
             .reset_index()
         )
         ds_coht2_grouped = (
             ds_coht2[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            .rename({"count": self.coht2},axis=1)
+            .rename({"count": self.coht2}, axis=1)
             .reset_index()
         )
 
