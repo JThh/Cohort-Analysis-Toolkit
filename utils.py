@@ -627,7 +627,6 @@ class CohortAnalyzer:
             .sum()
             .rename({"count": self.coht1}, axis=1)
             .reset_index()
-            .sort_values(by=[mod_attr])
         )
         ds_coht2_grouped = (
             ds_coht2[[mod_attr, "count"]]
@@ -635,7 +634,6 @@ class CohortAnalyzer:
             .sum()
             .rename({"count": self.coht2}, axis=1)
             .reset_index()
-            .sort_values(by=[mod_attr])
         )
 
         # ds_coht1_grouped["Cohort"] = self.coht1

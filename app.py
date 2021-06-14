@@ -9,18 +9,6 @@ from utils import CohortAnalyzer  # , ExcelDataReader
 
 
 ############################### STRICTLY CONFIDENTIAL ################################
-DRIVE_URL_MOD = (
-    "https://drive.google.com/file/d/1--KTK4vU5cA1akMGcIsHBmfo3FVfJSdp/view?usp=sharing"
-)
-DRIVE_URL_STU = (
-    "https://drive.google.com/file/d/1aoszzf2FtJD_ijv7tCmLFap0CEdaRcrL/view?usp=sharing"
-)
-PATH_MOD = (
-    "https://drive.google.com/uc?export=download&id=" + DRIVE_URL_MOD.split("/")[-2]
-)
-PATH_STU = (
-    "https://drive.google.com/uc?export=download&id=" + DRIVE_URL_STU.split("/")[-2]
-)
 FACULTY_MAP = {
     "BIZ": "Business School",
     "SoC": "School of Computing",
