@@ -152,6 +152,8 @@ class CohortAnalyzer:
 
         mod_info = None  # Release the memory.
 
+        #mod_info_agg['mod_faculty'] = mod_info_agg['mod_faculty'].apply(lambda x:x)
+
         def filter_out_empty(lst):
             try:
                 lst.remove(" ")
@@ -181,6 +183,7 @@ class CohortAnalyzer:
             :, "grading_basis"
         ].apply(clean_grading_basis)
 
+        # Rehash department names
         faculty_x_department = (
             mod_info_agg[["mod_department", "mod_faculty"]]
             .groupby(["mod_faculty"])
