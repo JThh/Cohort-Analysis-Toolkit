@@ -100,7 +100,7 @@ class CohortAnalyzer:
             reverse=True,
             key=lambda x: pd.concat(
                 [self.ds_coht1, self.ds_coht2]
-            ).academic_plan_descr.value_counts[x],
+            ).academic_plan_descr.value_counts()[x],
         )
 
         # academic_plan_perc = (
