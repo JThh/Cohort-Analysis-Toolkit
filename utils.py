@@ -603,22 +603,23 @@ class CohortAnalyzer:
             ds_coht1[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            # .rename({"count": self.coht1}, axis=1)
+            .rename({"count": self.coht1}, axis=1)
             .reset_index()
         )
         ds_coht2_grouped = (
             ds_coht2[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            # .rename({"count": self.coht2}, axis=1)
+            .rename({"count": self.coht2}, axis=1)
             .reset_index()
         )
-        ds_coht1_grouped["Cohort"] = self.coht1
-        ds_coht2_grouped["Cohort"] = self.coht2
 
-        ds_cohts_stacked = pd.concat(
-            [ds_coht1_grouped, ds_coht2_grouped], ignore_index=True
-        )
+        # ds_coht1_grouped["Cohort"] = self.coht1
+        # ds_coht2_grouped["Cohort"] = self.coht2
+
+        # ds_cohts_stacked = pd.concat(
+        #     [ds_coht1_grouped, ds_coht2_grouped], ignore_index=True
+        # )
 
         # mod_focus = self.mod_code_sorted_by_diff.merge(
         #     self.mod_info, on="mod_code"
@@ -645,33 +646,34 @@ class CohortAnalyzer:
 
         import plotly.express as px
 
-        # fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1)
-        # fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2)
+        category_orders = sorted(set(ds_coht1_grouped[mod_attr]).union(set(ds_coht2_grouped[mod_attr])))
 
-        fig_pie = px.pie(
-            ds_cohts_stacked,
-            names=mod_attr,
-            values=self.coht1,
-            facet_col="Cohort",
-            category_orders={mod_attr: sorted(ds_cohts_stacked[mod_attr].unique())},
-        )
+        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1, category_orders=category_orders)
+        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2, category_orders=category_orders)
 
-        ds_cohts_stacked = None
-
-        # custom_legend = dict(
-        #     orientation="h",
-        #     yanchor="bottom",
-        #     y=1.02,
-        #     xanchor="right",
-        #     x=1,
-        #     font=dict(size=12, color="black"),
+        # fig_pie = px.pie(
+        #     ds_cohts_stacked,
+        #     names=mod_attr,
+        #     values=self.coht1,
+        #     facet_col="Cohort",
+        #     category_orders={mod_attr: sorted(ds_cohts_stacked[mod_attr].unique())},
         # )
 
-        # fig_pie.update_layout(legend=custom_legend)
+        # ds_cohts_stacked = None
 
-        mod_focus_combined = ds_coht1_grouped.rename(
-            {"count": self.coht1}, axis=1
-        ).merge(ds_coht2_grouped.rename({"count": self.coht2}, axis=1), on=mod_attr)
+        custom_legend = dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(size=12, color="black"),
+        )
+
+        fig1.update_layout(legend=custom_legend)
+        fig2.update_layout(legend=custom_legend)
+
+        mod_focus_combined = ds_coht1_grouped.merge(ds_coht2_grouped, on=mod_attr)
         mod_focus_combined["enrol_percentage_cohort_1"] = (
             (mod_focus_combined[self.coht1])
             / mod_focus_combined[self.coht1].sum()
@@ -703,9 +705,9 @@ class CohortAnalyzer:
                 "percentage_change": ":.2f",
             },
         )
-        return mod_focus_combined, entropy1, entropy2, fig_pie, fig_bar
+        return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig_bar
 
-    # def
+
 
 
 # class ExcelDataReader():
