@@ -604,7 +604,9 @@ class CohortAnalyzer:
             .groupby([mod_attr])
             .sum()
             .rename({"count": self.coht1}, axis=1)
+            .sort_values()
             .reset_index()
+            .sort_values(by=[mod_attr])
         )
         ds_coht2_grouped = (
             ds_coht2[[mod_attr, "count"]]
@@ -612,6 +614,7 @@ class CohortAnalyzer:
             .sum()
             .rename({"count": self.coht2}, axis=1)
             .reset_index()
+            .sort_values(by=[mod_attr])
         )
 
         # ds_coht1_grouped["Cohort"] = self.coht1
@@ -646,8 +649,8 @@ class CohortAnalyzer:
 
         import plotly.express as px
 
-        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1, sort=True)
-        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2, sort=True)
+        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1)
+        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2)
 
         # fig_pie = px.pie(
         #     ds_cohts_stacked,
