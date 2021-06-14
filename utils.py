@@ -680,20 +680,18 @@ class CohortAnalyzer:
         #     facet_col="Cohort",
         #     category_orders={mod_attr: sorted(ds_cohts_stacked[mod_attr].unique())},
         # )
-
         # ds_cohts_stacked = None
+        # custom_legend = dict(
+        #     orientation="h",
+        #     yanchor="bottom",
+        #     y=1.02,
+        #     xanchor="right",
+        #     x=1,
+        #     font=dict(size=12, color="black"),
+        # )
 
-        custom_legend = dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-            font=dict(size=12, color="black"),
-        )
-
-        fig1.update_layout(legend=custom_legend)
-        fig2.update_layout(legend=custom_legend)
+        fig1.update_layout(showlegend=False)
+        fig2.update_layout(showlegend=False)
 
         mod_focus_combined = ds_coht1_grouped.merge(ds_coht2_grouped, on=mod_attr)
         mod_focus_combined["enrol_percentage_cohort_1"] = (

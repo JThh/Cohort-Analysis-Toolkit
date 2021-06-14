@@ -322,6 +322,8 @@ with st.beta_expander("Attribute percentage analysis"):
             stu_attr = st.selectbox(
                 "Select a student academic plan to explore", stu_attr_list, index=1
             )
+            st.write("You selected", stu_attr)
+
         else:
             #stu_attr = None,
             st.write("No available student academic plans to explore. Please proceed.")
