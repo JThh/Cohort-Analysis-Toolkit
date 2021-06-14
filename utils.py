@@ -143,10 +143,10 @@ class CohortAnalyzer:
         mod_info_agg = mod_info.groupby(["mod_code"]).agg(
             {
                 "grading_basis": " ".join,
-                "mod_faculty": max,
+                "mod_faculty": min,
                 "mod_activity_type": set,
                 "mod_level": max,
-                "mod_department": min,  # Assume no module belongs to multiple departments
+                "mod_department": max,  # Assume no module belongs to multiple departments
             }
         )
 
