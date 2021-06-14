@@ -56,9 +56,9 @@ selected_faculty = st.multiselect(
 if not selected_faculty:
     st.warning("At least select one faculty!")
 
-module = pd.read_csv(PATH_MOD)
+module = pd.read_csv(st.secrets.PATH_MOD)
 module = module[[x in selected_faculty for x in module.Faculty]]
-student = pd.read_csv(PATH_STU)
+student = pd.read_csv(st.secrets.PATH_STU)
 student = student[[x in selected_faculty for x in student.faculty_descr]]
 
 col1, col2 = st.beta_columns(2)
