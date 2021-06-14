@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 
 # import xlwings as xw
 
@@ -574,12 +574,12 @@ class CohortAnalyzer:
         if stu_attr:
             ds_coht1 = (
                 self.ds_coht1.loc[
-                    [self.ds_coht1[self.student_attribute_of_interest] == stu_attr], :
+                    self.ds_coht1[self.student_attribute_of_interest] == stu_attr, :
                 ]
             )
             ds_coht2 = (
                 self.ds_coht2.loc[
-                    [self.ds_coht2[self.student_attribute_of_interest] == stu_attr], :
+                    self.ds_coht2[self.student_attribute_of_interest] == stu_attr, :
                 ]
             )
         else:
