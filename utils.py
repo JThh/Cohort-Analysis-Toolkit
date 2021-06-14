@@ -90,9 +90,27 @@ class CohortAnalyzer:
         self.mod_agg = mod_agg.fillna(0)
         self.mod_agg["mod_code_hash"] = list(range(mod_agg.shape[0]))
 
+        academic_plan_list = mod_stu_cross.academic_plan_descr.unique()
+
+        academic_plan_perc = (
+            mod_stu_cross.academic_plan_descr.value_counts() / mod_stu_cross.shape[0]
+        )
+
+        #Threshold value for selecting student academic plan list
+        self.acad_plan_thres = 0.1
+        self.academic_plans = academic_plan_list[
+            [academic_plan_perc[x] > self.thres for x in academic_plan_list]
+        ]
+
+        self.student_attribute_of_interest = "academic_plan_descr"
+
     @property
     def _mod_agg(self):
         return self.mod_agg
+
+    @property
+    def _academic_plans(self):
+        return self.academic_plans
 
     def get_student_and_module_count(self):
         return (
@@ -541,17 +559,65 @@ class CohortAnalyzer:
         return mod_diff_svd_info, pca_fig, fig
         # print("It is advised to clear the cache each time after running a graphing function!")
 
-    def attr_perc_change(self, attr="mod_faculty"):
+    def attr_perc_change(self, stu_attr=None, mod_attr="mod_faculty"):
         """
         Plot the percentage changes in module attributes. Possible inputs are ['grading_basis', 'mod_faculty', 'mod_activity_type', 'mod_level']
         Note that get_most_different_modules() method needs to be run first.
         """
-        assert attr in self.kept_attr
-        mod_focus = self.mod_code_sorted_by_diff.merge(
-            self.mod_info, on="mod_code"
-        ).astype({attr: "category"})
-        mod_focus_grouped_1 = mod_focus[[self.coht1, attr]].groupby([attr]).sum()
-        mod_focus_grouped_2 = mod_focus[[self.coht2, attr]].groupby([attr]).sum()
+        if not mod_attr:
+            raise ValueError('Please select a module attribute')
+
+        # assert mod_attr in self.kept_attr and stu_attr in self.academic_plans
+
+        ds_coht1 = ds_coht2 = ds_coht1_grouped = ds_coht2_grouped = pd.DataFrame()
+
+        if stu_attr:
+            ds_coht1 = (
+                self.ds_coht1.loc[
+                    [self.ds_coht1[self.student_attribute_of_interest] == stu_attr], :
+                ]
+            )
+            ds_coht2 = (
+                self.ds_coht2.loc[
+                    [self.ds_coht2[self.student_attribute_of_interest] == stu_attr], :
+                ]
+            )
+        else:
+            ds_coht1 = self.ds_coht1
+            ds_coht2 = self.ds_coht2
+
+        ds_coht1 = (
+            ds_coht1
+            .drop(self.kept_attr, axis=1)
+            .merge(self.mod_info, on="mod_code")
+        )
+        ds_coht2 = (
+            ds_coht2
+            .drop(self.kept_attr, axis=1)
+            .merge(self.mod_info, on="mod_code")
+        )
+        
+        ds_coht1_grouped = (
+            ds_coht1[[mod_attr, "count"]]
+            .groupby([mod_attr])
+            .sum()
+            .rename({"count": self.coht1})
+            .reset_index()
+        )
+        ds_coht2_grouped = (
+            ds_coht2[[mod_attr, "count"]]
+            .groupby([mod_attr])
+            .sum()
+            .rename({"count": self.coht2})
+            .reset_index()
+        )
+
+
+        # mod_focus = self.mod_code_sorted_by_diff.merge(
+        #     self.mod_info, on="mod_code"
+        # ).astype({attr: "category"})
+        # mod_focus_grouped_1 = mod_focus[[self.coht1, attr]].groupby([attr]).sum()
+        # mod_focus_grouped_2 = mod_focus[[self.coht2, attr]].groupby([attr]).sum()
 
         def entropy(lst):
             if len(lst) == 0:
@@ -564,22 +630,16 @@ class CohortAnalyzer:
                 return accu
 
         entropy1 = entropy(
-            (
-                mod_focus_grouped_1[self.coht1]
-                / (mod_focus_grouped_1[self.coht1]).sum()
-            ).values
+            (ds_coht1_grouped[self.coht1] / (ds_coht1_grouped[self.coht1]).sum()).values
         )
         entropy2 = entropy(
-            (
-                mod_focus_grouped_2[self.coht2]
-                / (mod_focus_grouped_2[self.coht2]).sum()
-            ).values
+            (ds_coht2_grouped[self.coht2] / (ds_coht2_grouped[self.coht2]).sum()).values
         )
 
         import plotly.express as px
 
-        fig1 = px.pie(mod_focus_grouped_1.reset_index(), names=attr, values=self.coht1)
-        fig2 = px.pie(mod_focus_grouped_2.reset_index(), names=attr, values=self.coht2)
+        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1)
+        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2)
 
         custom_legend = dict(
             orientation="h",
@@ -593,7 +653,7 @@ class CohortAnalyzer:
         fig1.update_layout(legend=custom_legend)
         fig2.update_layout(legend=custom_legend)
 
-        mod_focus_combined = mod_focus_grouped_1.join(mod_focus_grouped_2).reset_index()
+        mod_focus_combined = ds_coht1_grouped.merge(ds_coht2_grouped, on=mod_attr)
         mod_focus_combined["enrol_percentage_cohort_1"] = (
             (mod_focus_combined[self.coht1])
             / mod_focus_combined[self.coht1].sum()
@@ -615,7 +675,7 @@ class CohortAnalyzer:
         )
         fig = px.bar(
             mod_focus_combined,
-            x=attr,
+            x=mod_attr,
             y="percentage_change",
             color="color",
             color_discrete_map={"blue": "#636EFA", "red": "#EF553B"},
@@ -627,7 +687,8 @@ class CohortAnalyzer:
         )
         return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig
 
-    # def 
+    # def
+
 
 # class ExcelDataReader():
 #     def __init__(self, path, sheet_name, range_from, range_to, index=False, header=True):

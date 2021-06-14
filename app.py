@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+
 # import matplotlib.pyplot as plt
 # from PIL import Image
 
@@ -75,7 +76,9 @@ student = student[[x in selected_faculty for x in student.faculty_descr]]
 col1, col2 = st.beta_columns(2)
 
 with col1:
-    cohort1 = st.number_input("Select a cohort to compare (10-14)", min_value=10, max_value=14)
+    cohort1 = st.number_input(
+        "Select a cohort to compare (10-14)", min_value=10, max_value=14
+    )
     st.write(cohort1, "selected")
 
 with col2:
@@ -90,7 +93,9 @@ with col2:
 try:
     analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
 except:
-    st.error("Analyzer loading error. Please try again or select different cohorts to compare!")
+    st.error(
+        "Analyzer loading error. Please try again or select different cohorts to compare!"
+    )
 
 st.write("Cohort Analyzer installed and ready.")
 
@@ -289,10 +294,12 @@ with st.beta_expander("Principal component analysis"):
     #         n_components=n_components, topkmods=k_mods
     #     )
 
-    mod_pc_diff, pca_fig, fig = analyzer.PCAnalysis(n_components=n_components, topkmods=k_mods)
+    mod_pc_diff, pca_fig, fig = analyzer.PCAnalysis(
+        n_components=n_components, topkmods=k_mods
+    )
 
     st.plotly_chart(pca_fig, use_container_width=True)
-        
+
     st.subheader("Dataframe Results:")
     st.dataframe(mod_pc_diff.sample(30).reset_index(drop=True))
     mod_pc_diff = None
@@ -303,15 +310,37 @@ with st.beta_expander("Principal component analysis"):
 
 
 with st.beta_expander("Attribute percentage analysis"):
-    attr = st.selectbox(
-        "Select an attribute to explore",
-        ("grading_basis", "mod_faculty", "mod_activity_type", "mod_level"),
-        index=1,
-    )
-    st.write("You selected", attr)
+    stu_attr_list = analyzer.academic_plans
+
+    col1, col2 = st.beta_columns(2)
+
+    with col1:
+        if stu_attr_list:
+            stu_attr = st.selectbox(
+                "Select a student academic plan to explore", stu_attr_list, index=1
+            )
+        else:
+            stu_attr = None,
+            st.write("No available student academic plans to explore. Please proceed.")
+
+    with col2:
+        mod_attr = st.selectbox(
+            "Select an attribute to explore",
+            (
+                "grading_basis",
+                "mod_faculty",
+                "mod_activity_type",
+                "mod_level",
+                "mod_department",
+            ),
+            index=1,
+        )
+        st.write("You selected", mod_attr)
 
     with st.echo():
-        mod_attr_perc_change, ent1, ent2, fig1, fig2, fig = analyzer.attr_perc_change(attr=attr)
+        mod_attr_perc_change, ent1, ent2, fig1, fig2, fig = analyzer.attr_perc_change(
+            stu_attr=stu_attr, mod_attr=mod_attr
+        )
 
     #   st.subheader("Dataframe Results:")
     #   st.dataframe(mod_attr_perc_change)
@@ -320,15 +349,15 @@ with st.beta_expander("Attribute percentage analysis"):
     col1, col2 = st.beta_columns(2)
 
     with col1:
-        st.subheader('Cohort '+str(cohort1))
+        st.subheader("Cohort " + str(cohort1))
         st.plotly_chart(fig1, use_container_width=True)
 
     with col2:
-        st.subheader('Cohort '+str(cohort2))
+        st.subheader("Cohort " + str(cohort2))
         st.plotly_chart(fig2, use_container_width=True)
-    
-    st.write('Delta Entropy:',ent2 - ent1)
 
-    st.subheader("Plot the percentage difference for {}:".format(attr))
+    st.write("Delta Entropy:", ent2 - ent1)
+
+    st.subheader("Plot the percentage difference for {}:".format(mod_attr))
     st.plotly_chart(fig, use_container_width=True)
     fig = None
