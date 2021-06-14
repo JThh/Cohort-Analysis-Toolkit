@@ -127,7 +127,7 @@ class CohortAnalyzer:
             self.ds_coht2.mod_code.nunique(),
         )
 
-    def integrate_module_information(self):
+    def process_module_information(self):
         self.kept_attr = [
             "mod_code",
             "grading_basis",
@@ -152,7 +152,7 @@ class CohortAnalyzer:
 
         mod_info = None  # Release the memory.
 
-        #mod_info_agg['mod_faculty'] = mod_info_agg['mod_faculty'].apply(lambda x:x)
+        # mod_info_agg['mod_faculty'] = mod_info_agg['mod_faculty'].apply(lambda x:x)
 
         def filter_out_empty(lst):
             try:
@@ -194,7 +194,7 @@ class CohortAnalyzer:
         faculty_x_department["mod_dep_rehash"] = [
             map(
                 lambda n: row.mod_faculty + "-dep" + str(n),
-                list(range(1,len(row.mod_department)+1)),
+                list(range(1, len(row.mod_department) + 1)),
             )
             for row in faculty_x_department.itertuples()
         ]
@@ -216,7 +216,7 @@ class CohortAnalyzer:
         ].apply(lambda x: departments_map[x])
 
         self.mod_info = mod_info_agg.reset_index()
-        print("Module information successfully integrated.")
+        print("Module information successfully processed.")
 
     @property
     def _mod_info(self):
@@ -253,7 +253,7 @@ class CohortAnalyzer:
     def plot_topk_popular_modules(self, k=10):
         """
         Plot the module enrolment sorted by module popularity.
-        Note that integrate_module_information() needs to be run first.
+        Note that process_module_information() needs to be run first.
         :param thres: Filter only modules with at least thres amount of students enrolled.
         """
         # Sort the modules by the sum of enrolled students in the two academic years.
@@ -603,15 +603,21 @@ class CohortAnalyzer:
             ds_coht1[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            .rename({"count": self.coht1}, axis=1)
+            # .rename({"count": self.coht1}, axis=1)
             .reset_index()
         )
         ds_coht2_grouped = (
             ds_coht2[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            .rename({"count": self.coht2}, axis=1)
+            # .rename({"count": self.coht2}, axis=1)
             .reset_index()
+        )
+        ds_coht1_grouped["Cohort"] = self.coht1
+        ds_coht2_grouped["Cohort"] = self.coht2
+
+        ds_cohts_stacked = pd.concat(
+            [ds_coht1_grouped, ds_coht2_grouped], ignore_index=True
         )
 
         # mod_focus = self.mod_code_sorted_by_diff.merge(
@@ -631,30 +637,41 @@ class CohortAnalyzer:
                 return accu
 
         entropy1 = entropy(
-            (ds_coht1_grouped[self.coht1] / (ds_coht1_grouped[self.coht1]).sum()).values
+            (ds_coht1_grouped["count"] / (ds_coht1_grouped["count"]).sum()).values
         )
         entropy2 = entropy(
-            (ds_coht2_grouped[self.coht2] / (ds_coht2_grouped[self.coht2]).sum()).values
+            (ds_coht2_grouped["count"] / (ds_coht2_grouped["count"]).sum()).values
         )
 
         import plotly.express as px
 
-        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1)
-        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2)
+        # fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1)
+        # fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2)
 
-        custom_legend = dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-            font=dict(size=12, color="black"),
+        fig_pie = px.pie(
+            ds_cohts_stacked,
+            names=mod_attr,
+            values=self.coht1,
+            facet_col="Cohort",
+            category_orders={mod_attr: sorted(ds_cohts_stacked[mod_attr].unique())},
         )
 
-        fig1.update_layout(legend=custom_legend)
-        fig2.update_layout(legend=custom_legend)
+        ds_cohts_stacked = None
 
-        mod_focus_combined = ds_coht1_grouped.merge(ds_coht2_grouped, on=mod_attr)
+        # custom_legend = dict(
+        #     orientation="h",
+        #     yanchor="bottom",
+        #     y=1.02,
+        #     xanchor="right",
+        #     x=1,
+        #     font=dict(size=12, color="black"),
+        # )
+
+        # fig_pie.update_layout(legend=custom_legend)
+
+        mod_focus_combined = ds_coht1_grouped.rename(
+            {"count": self.coht1}, axis=1
+        ).merge(ds_coht2_grouped.rename({"count": self.coht2}, axis=1), on=mod_attr)
         mod_focus_combined["enrol_percentage_cohort_1"] = (
             (mod_focus_combined[self.coht1])
             / mod_focus_combined[self.coht1].sum()
@@ -674,7 +691,7 @@ class CohortAnalyzer:
         mod_focus_combined["color"] = np.where(
             mod_focus_combined["percentage_change"] > 0, "blue", "red"
         )
-        fig = px.bar(
+        fig_bar = px.bar(
             mod_focus_combined,
             x=mod_attr,
             y="percentage_change",
@@ -686,7 +703,7 @@ class CohortAnalyzer:
                 "percentage_change": ":.2f",
             },
         )
-        return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig
+        return mod_focus_combined, entropy1, entropy2, fig_pie, fig_bar
 
     # def
 
