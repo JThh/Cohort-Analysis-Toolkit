@@ -192,9 +192,11 @@ class CohortAnalyzer:
         )
 
         faculty_x_department["mod_dep_rehash"] = [
-            map(
-                lambda n: row.mod_faculty + "-dep" + str(n),
-                list(range(1, len(row.mod_department) + 1)),
+            list(
+                map(
+                    lambda n: row.mod_faculty.lower() + "-dep" + str(n),
+                    list(range(1, len(row.mod_department) + 1)),
+                )
             )
             for row in faculty_x_department.itertuples()
         ]
@@ -706,8 +708,6 @@ class CohortAnalyzer:
             },
         )
         return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig_bar
-
-
 
 
 # class ExcelDataReader():
