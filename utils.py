@@ -604,7 +604,6 @@ class CohortAnalyzer:
             .groupby([mod_attr])
             .sum()
             .rename({"count": self.coht1}, axis=1)
-            .sort_values()
             .reset_index()
             .sort_values(by=[mod_attr])
         )
