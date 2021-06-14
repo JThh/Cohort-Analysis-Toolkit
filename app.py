@@ -314,13 +314,14 @@ with st.beta_expander("Attribute percentage analysis"):
 
     col1, col2 = st.beta_columns(2)
 
+    stu_attr = None
     with col1:
         if len(stu_attr_list) > 0:
             stu_attr = st.selectbox(
                 "Select a student academic plan to explore", stu_attr_list, index=1
             )
         else:
-            stu_attr = None,
+            #stu_attr = None,
             st.write("No available student academic plans to explore. Please proceed.")
 
     with col2:
