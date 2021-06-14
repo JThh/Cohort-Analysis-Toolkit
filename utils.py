@@ -206,7 +206,8 @@ class CohortAnalyzer:
             'YONG SIEW TOH CONSERVATORY OF MUSIC': 'YSTCM',
             'NUS ENTERPRISE':'Ent',
             'SPECIALITY RESEARCH INSTITUTES/CENTRES':'SRI/C',
-            'LAW': 'LAW'
+            'LAW': 'LAW',
+            'n.a.': 'N.A.'
         }
 
 
