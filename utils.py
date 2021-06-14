@@ -191,11 +191,11 @@ class CohortAnalyzer:
             .reset_index()
         )
 
-        faculty_short_names = {
+        faculty_short_names_mapping = {
             'ARTS & SOCIAL SCIENCES': 'FASS',
             'SCHOOL OF BUSINESS': 'BIZ',
-            'ENGINEERING': 'Eng',
-            'NON-FACULTY-BASED DEPARTMENTS': 'Non-Fac',
+            'ENGINEERING': 'ENG',
+            'NON-FACULTY-BASED DEPARTMENTS': 'NON_FAC',
             'SCIENCE': 'FoS',
             'SCHOOL OF COMPUTING': 'SoC',
             'UNIVERSITY SCHOLARS PROGRAMME': 'USP',
@@ -204,9 +204,13 @@ class CohortAnalyzer:
             'YONG LOO LIN SCHOOL OF MEDICINE': 'YLLSM',
             'LEE KUAN YEW SCHOOL OF PUBLIC POLICY': 'LKYSPP',
             'YONG SIEW TOH CONSERVATORY OF MUSIC': 'YSTCM',
-            'NUS ENTERPRISE':'Ent',
-            'SPECIALITY RESEARCH INSTITUTES/CENTRES':'SRI/C',
+            'NUS ENTERPRISE':'ENT',
+            'SPECIALITY RESEARCH INSTITUTES/CENTRES': 'SRI/C',
             'LAW': 'LAW',
+            'UNIVERSITY ADMINISTRATION': 'UniAdmin',
+            'JOINT MULTI-DISCIPLINARY PROGRAMMES': 'JMDP',
+            'SCHOOL OF CONTINUING & LIFELONG EDN': 'SCLE',
+            'NUS GRAD SCH FOR INTEGRATIVE SCI & ENGG': 'NGSFISE',
             'n.a.': 'N.A.'
         }
 
@@ -214,7 +218,7 @@ class CohortAnalyzer:
         faculty_x_department["mod_dep_rehash"] = [
             list(
                 map(
-                    lambda n: faculty_short_names[row.mod_faculty] + "-dep" + str(n),
+                    lambda n: faculty_short_names_mapping[row.mod_faculty] + "-dep" + str(n),
                     list(range(1, len(row.mod_department) + 1)),
                 )
             )
