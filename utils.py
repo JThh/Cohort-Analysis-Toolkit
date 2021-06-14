@@ -146,7 +146,7 @@ class CohortAnalyzer:
                 "mod_faculty": max,
                 "mod_activity_type": set,
                 "mod_level": max,
-                "mod_department": max,  # Assume no module belongs to multiple departments
+                "mod_department": min,  # Assume no module belongs to multiple departments
             }
         )
 
@@ -191,7 +191,7 @@ class CohortAnalyzer:
         faculty_x_department["mod_dep_rehash"] = [
             map(
                 lambda n: row.mod_faculty + "-dep" + str(n),
-                list(range(len(row.mod_department))),
+                list(range(1,len(row.mod_department)+1)),
             )
             for row in faculty_x_department.itertuples()
         ]
@@ -206,7 +206,7 @@ class CohortAnalyzer:
         for mapping in faculty_x_department.mod_dep_mapping:
             departments_map.update(mapping)
 
-        faculty_x_department = None
+        faculty_x_department = None  # Recycle the memory
 
         mod_info_agg.loc[:, "mod_department"] = mod_info_agg.loc[
             :, "mod_department"
