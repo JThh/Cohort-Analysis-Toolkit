@@ -588,12 +588,12 @@ class CohortAnalyzer:
 
         ds_coht1 = (
             ds_coht1
-            .drop(self.kept_attr, axis=1)
+            .drop(self.kept_attr[1:], axis=1)
             .merge(self.mod_info, on="mod_code")
         )
         ds_coht2 = (
             ds_coht2
-            .drop(self.kept_attr, axis=1)
+            .drop(self.kept_attr[1:], axis=1)
             .merge(self.mod_info, on="mod_code")
         )
 
@@ -611,7 +611,6 @@ class CohortAnalyzer:
             .rename({"count": self.coht2})
             .reset_index()
         )
-
 
         # mod_focus = self.mod_code_sorted_by_diff.merge(
         #     self.mod_info, on="mod_code"
