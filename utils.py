@@ -601,14 +601,14 @@ class CohortAnalyzer:
             ds_coht1[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            .rename({"count": self.coht1})
+            .rename({"count": self.coht1},axis=1)
             .reset_index()
         )
         ds_coht2_grouped = (
             ds_coht2[[mod_attr, "count"]]
             .groupby([mod_attr])
             .sum()
-            .rename({"count": self.coht2})
+            .rename({"count": self.coht2},axis=1)
             .reset_index()
         )
 
