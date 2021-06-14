@@ -646,10 +646,8 @@ class CohortAnalyzer:
 
         import plotly.express as px
 
-        category_orders = sorted(set(ds_coht1_grouped[mod_attr]).union(set(ds_coht2_grouped[mod_attr])))
-
-        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1, category_orders=category_orders)
-        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2, category_orders=category_orders)
+        fig1 = px.pie(ds_coht1_grouped, names=mod_attr, values=self.coht1, sort=True)
+        fig2 = px.pie(ds_coht2_grouped, names=mod_attr, values=self.coht2, sort=True)
 
         # fig_pie = px.pie(
         #     ds_cohts_stacked,
