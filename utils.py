@@ -638,10 +638,10 @@ class CohortAnalyzer:
                 return accu
 
         entropy1 = entropy(
-            (ds_coht1_grouped["count"] / (ds_coht1_grouped["count"]).sum()).values
+            (ds_coht1_grouped[self.coht1] / (ds_coht1_grouped[self.coht1]).sum()).values
         )
         entropy2 = entropy(
-            (ds_coht2_grouped["count"] / (ds_coht2_grouped["count"]).sum()).values
+            (ds_coht2_grouped[self.coht2] / (ds_coht2_grouped[self.coht2]).sum()).values
         )
 
         import plotly.express as px
