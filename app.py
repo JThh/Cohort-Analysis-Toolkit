@@ -90,14 +90,13 @@ with col2:
     )
     st.write(cohort2, "selected")
 
-# try:
-#     analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
-# except:
-#     st.error(
-#         "Analyzer loading error. Please try again or select different cohorts to compare!"
-#     )
+try:
+    analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
+except:
+    st.error(
+        "Analyzer loading error. Please try again or select different cohorts to compare!"
+    )
 
-analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
 st.write("Cohort Analyzer installed and ready.")
 
 with st.beta_expander("Processed Dataframe"):

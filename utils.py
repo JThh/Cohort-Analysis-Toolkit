@@ -99,7 +99,7 @@ class CohortAnalyzer:
         #Threshold value for selecting student academic plan list
         self.acad_plan_thres = 0.1
         self.academic_plans = academic_plan_list[
-            [academic_plan_perc[x] > self.thres for x in academic_plan_list]
+            [academic_plan_perc[x] > self.acad_plan_thres for x in academic_plan_list]
         ]
 
         self.student_attribute_of_interest = "academic_plan_descr"
@@ -596,7 +596,7 @@ class CohortAnalyzer:
             .drop(self.kept_attr, axis=1)
             .merge(self.mod_info, on="mod_code")
         )
-        
+
         ds_coht1_grouped = (
             ds_coht1[[mod_attr, "count"]]
             .groupby([mod_attr])
