@@ -310,12 +310,12 @@ with st.beta_expander("Principal component analysis"):
 
 
 with st.beta_expander("Attribute percentage analysis"):
-    stu_have_plan, stu_attr_list = analyzer.academic_plans
+    stu_attr_list = analyzer.academic_plans
 
     col1, col2 = st.beta_columns(2)
 
     with col1:
-        if stu_have_plan:
+        if len(stu_attr_list) > 0:
             stu_attr = st.selectbox(
                 "Select a student academic plan to explore", stu_attr_list, index=1
             )

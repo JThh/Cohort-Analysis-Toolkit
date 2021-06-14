@@ -110,7 +110,7 @@ class CohortAnalyzer:
 
     @property
     def _academic_plans(self):
-        return len(self.academic_plans.index) == 0, self.academic_plans
+        return self.academic_plans
 
     def get_student_and_module_count(self):
         return (
