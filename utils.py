@@ -669,7 +669,7 @@ class CohortAnalyzer:
             y=1.02,
             xanchor="right",
             x=1,
-            font=dict(size=12, color="black"),
+            font=dict(size=6, color="black"),
         )
 
         fig1.update_layout(legend=custom_legend)
