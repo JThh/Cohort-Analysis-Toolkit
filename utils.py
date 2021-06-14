@@ -191,10 +191,29 @@ class CohortAnalyzer:
             .reset_index()
         )
 
+        faculty_short_names = {
+            'ARTS & SOCIAL SCIENCES': 'FASS',
+            'SCHOOL OF BUSINESS': 'BIZ',
+            'ENGINEERING': 'Eng',
+            'NON-FACULTY-BASED DEPARTMENTS': 'Non-Fac',
+            'SCIENCE': 'FoS',
+            'SCHOOL OF COMPUTING': 'SoC',
+            'UNIVERSITY SCHOLARS PROGRAMME': 'USP',
+            'SCHOOL OF DESIGN AND ENVIRONMENT': 'SDE',
+            'SAW SWEE HOCK SCHOOL OF PUBLIC HEALTH': 'SSHSPH',
+            'YONG LOO LIN SCHOOL OF MEDICINE': 'YLLSM',
+            'LEE KUAN YEW SCHOOL OF PUBLIC POLICY': 'LKYSPP',
+            'YONG SIEW TOH CONSERVATORY OF MUSIC': 'YSTCM',
+            'NUS ENTERPRISE':'Ent',
+            'SPECIALITY RESEARCH INSTITUTES/CENTRES':'SRI/C',
+            'LAW': 'LAW'
+        }
+
+
         faculty_x_department["mod_dep_rehash"] = [
             list(
                 map(
-                    lambda n: row.mod_faculty.lower() + "-dep" + str(n),
+                    lambda n: faculty_short_names[row.mod_faculty] + "-dep" + str(n),
                     list(range(1, len(row.mod_department) + 1)),
                 )
             )
