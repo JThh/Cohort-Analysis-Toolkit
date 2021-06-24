@@ -615,8 +615,8 @@ class CohortAnalyzer:
                 self.ds_coht2[self.stu_attr_of_interest] == stu_attr, :
             ]
         else:
-            ds_coht1 = self.ds_coht1
-            ds_coht2 = self.ds_coht2
+            ds_coht1 = self.ds_coht1.copy()
+            ds_coht2 = self.ds_coht2.copy()
 
         ds_coht1 = ds_coht1.drop(self.kept_attr[1:], axis=1).merge(
             self.mod_info, on="mod_code"
