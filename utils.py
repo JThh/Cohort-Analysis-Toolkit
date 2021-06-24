@@ -712,15 +712,15 @@ class CohortAnalyzer:
             - mod_focus_combined["enrol_percentage_cohort_1"]
         )
 
-        mod_focus_combined["color"] = np.where(
-            mod_focus_combined["percentage_change"] > 0, "blue", "red"
+        mod_focus_combined["value"] = np.where(
+            mod_focus_combined["percentage_change"] > 0, "positive", "negative"
         )
         fig_bar = px.bar(
             mod_focus_combined,
             x=mod_attr,
             y="percentage_change",
-            color="color",
-            color_discrete_map={"blue": "#636EFA", "red": "#EF553B"},
+            color="value",
+            color_discrete_map={"positive": "#636EFA", "negative": "#EF553B"},
             hover_data={
                 self.coht1: True,
                 self.coht2: True,
