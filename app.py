@@ -308,9 +308,11 @@ with st.beta_expander("Attribute percentage analysis"):
     with col1:
         if len(stu_attr_list) > 0:
             stu_attr = st.selectbox(
-                "Select a student academic plan to explore", stu_attr_list, index=1
+                "Select a student academic plan to explore", ['Faculty-level']+stu_attr_list, index=1
             )
             st.write("You selected", stu_attr)
+            if stu_attr == 'Faculty_level':
+                stu_attr = None
 
         else:
             #stu_attr = None,
