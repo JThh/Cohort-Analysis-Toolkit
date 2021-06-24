@@ -727,6 +727,8 @@ class CohortAnalyzer:
                 "percentage_change": ":.2f",
             },
         )
+        fig_bar.update_xaxes(tickangle=45)
+        
         return mod_focus_combined, entropy1, entropy2, fig1, fig2, fig_bar
 
 
