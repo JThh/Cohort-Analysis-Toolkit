@@ -311,7 +311,8 @@ with st.beta_expander("Attribute percentage analysis"):
                 "Select a student academic plan to explore", ['Faculty-level']+stu_attr_list, index=1
             )
             st.write("You selected", stu_attr)
-            if stu_attr == 'Faculty_level':
+            
+            if stu_attr == 'Faculty-level':
                 stu_attr = None
 
         else:
