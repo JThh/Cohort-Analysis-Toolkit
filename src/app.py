@@ -5,7 +5,7 @@ import pandas as pd
 # import matplotlib.pyplot as plt
 # from PIL import Image
 
-from utils import CohortAnalyzer  # , ExcelDataReader
+from CohortAnalyzer import CohortAnalyzer  # , ExcelDataReader
 
 
 ############################### STRICTLY CONFIDENTIAL ################################
@@ -16,7 +16,7 @@ FACULTY_MAP = {
 }
 # FILE_NAME_MOD = 'modules.csv'
 # FILE_NAME_STU = 'programs.csv'
-# IMAGE_PATH = 'icon.png'
+# IMAGE_PATH = '../assets/icon.png'
 ######################################################################################
 
 
