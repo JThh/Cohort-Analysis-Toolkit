@@ -35,12 +35,12 @@ with st.sidebar.expander("Notes"):
     st.markdown(
         """
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
-                      2. The app is updated and functional until 2nd June;
-                      3. The source code is openly shared under MIT license.
+                      2. The app is last updated on 8th Oct, 2022;
+                      3. The source code is openly shared under Apache license.
                       """
     )
 st.sidebar.markdown(
-    """_Version 1.3.0 | June 12nd 2021_""".format(unsafe_allow_html=True)
+    """_Version 1.4.0 | Oct 8th 2022_""".format(unsafe_allow_html=True)
 )
 
 
