@@ -1,6 +1,6 @@
 # Module Selection Analysis
 
-<p align="center"><img width="30%" src="assets/cohortanalyzer_phone.jpg"/><img width="60%" src="assets/cohortanalyzer.jpg"/></p>
+<p align="center"><img width="25%" src="assets/cohortanalyzer_phone.jpg"/><img width="75%" src="assets/cohortanalyzer.jpg"/></p>
 
 ## Introduction
 
