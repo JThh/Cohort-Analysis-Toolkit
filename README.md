@@ -1,4 +1,4 @@
-# CohortAnalyzer: Module Enrolment Statistical Analysis kit
+## CohortAnalyzer: Module Enrolment Statistical Analysis kit
 
 <p align="center"><img width="20%" src="assets/cohortanalyzer_phone.jpg"/><img width="80%" src="assets/cohortanalyzer.jpg"/></p>
 
