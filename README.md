@@ -1,6 +1,6 @@
 # Module Selection Analysis
 
-<p align="center"><img width="25%" src="assets/cohortanalyzer_phone.jpg"/><img width="75%" src="assets/cohortanalyzer.jpg"/></p>
+<p align="center"><img width="20%" src="assets/cohortanalyzer_phone.jpg"/><img width="80%" src="assets/cohortanalyzer.jpg"/></p>
 
 ## Introduction
 
@@ -12,7 +12,7 @@ For your reference, my app is publicly shared at [this address](https://jthh-mod
 
 Install visualization and web-app packaging dependencies:
 ```
-pip install -r requirements/requirements.txt
+pip install -r requirements.txt
 ```
 
 Then locally run the app with Streamlit run commands:

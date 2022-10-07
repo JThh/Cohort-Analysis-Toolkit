@@ -31,7 +31,7 @@ st.sidebar.header("Dashboard Demo")
 # image = Image.open(IMAGE_PATH)
 # st.sidebar.image(image, )
 
-with st.sidebar.beta_expander("Notes"):
+with st.sidebar.expander("Notes"):
     st.markdown(
         """
                       1. The data is confidential; this demo version is only using some fake enrolment data for illustration purpose;
@@ -61,7 +61,7 @@ module = module[[x in selected_faculty for x in module.Faculty]]
 student = pd.read_csv(st.secrets["PATH_STU"])
 student = student[[x in selected_faculty for x in student.faculty_descr]]
 
-col1, col2 = st.beta_columns(2)
+col1, col2 = st.columns(2)
 
 with col1:
     cohort1 = st.number_input(
@@ -89,7 +89,7 @@ analyzer = CohortAnalyzer(module, student, cohort1, cohort2)
 
 st.write("Cohort Analyzer installed and ready.")
 
-with st.beta_expander("Processed Dataframe"):
+with st.expander("Processed Dataframe"):
     (
         coht1_stu_count,
         coht2_stu_count,
@@ -115,7 +115,7 @@ with st.beta_expander("Processed Dataframe"):
         cohort2,
         ".",
     )
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("Module enrolment data")
@@ -139,7 +139,7 @@ with st.beta_expander("Processed Dataframe"):
     st.plotly_chart(fig, use_container_width=True)
     fig = None
 
-with st.beta_expander("Statistical Analysis"):
+with st.expander("Statistical Analysis"):
     st.markdown(
         "Conduct statistical tests to check whether there are significant differences betweent the cohorts."
     )
@@ -163,7 +163,7 @@ with st.beta_expander("Statistical Analysis"):
         st.write("Thus, there is no significant difference between their variances")
 
 
-with st.beta_expander("Module enrolment difference analysis"):
+with st.expander("Module enrolment difference analysis"):
     st.subheader("Student level analysis")
     st.markdown(
         "Select a random student from each cohort to compare their module selection patterns"
@@ -174,7 +174,7 @@ with st.beta_expander("Module enrolment difference analysis"):
         index=1,
     )
 
-    col1, col2, col3 = st.beta_columns([2, 1, 1])
+    col1, col2, col3 = st.columns([2, 1, 1])
 
     with col1:
         min_num_mods = st.slider(
@@ -228,7 +228,7 @@ with st.beta_expander("Module enrolment difference analysis"):
         "distinct modules in that academic year",
     )
 
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.plotly_chart(fig1, use_container_width=True)
@@ -256,11 +256,11 @@ with st.beta_expander("Module enrolment difference analysis"):
     fig = None
 
 
-with st.beta_expander("Principal component analysis"):
+with st.expander("Principal component analysis"):
     st.markdown(
         "Utilize dimension reduction tool (e.g. SVD) to find the principal components."
     )
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
     with col1:
         n_components = st.number_input(
             "Number of components to keep: (Default 4)",
@@ -299,10 +299,10 @@ with st.beta_expander("Principal component analysis"):
     fig = None
 
 
-with st.beta_expander("Attribute percentage analysis"):
+with st.expander("Attribute percentage analysis"):
     stu_attr_list = analyzer.academic_plans
 
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
     stu_attr = None
     with col1:
@@ -342,7 +342,7 @@ with st.beta_expander("Attribute percentage analysis"):
     #   st.dataframe(mod_attr_perc_change)
     #   mod_attr_perc_change = None
 
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("Cohort " + str(cohort1))
