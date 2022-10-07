@@ -1,11 +1,12 @@
 # Module Selection Analysis
 
-<p align="center"><img width="20%" src="assets/cohortanalyzer_phone.jpg"/><img width="80%" src="assets/cohortanalyzer.jpg"/></p>
+<p align="center"><img width="30%" src="assets/cohortanalyzer_phone.jpg"/><img width="60%" src="assets/cohortanalyzer.jpg"/></p>
 
 ## Introduction
 
-This is repository is intended for provosts and students to visualize course enrolment datasets and compare between cohorts to gain some statistical insights. The toolkit was originally used for my UROP side quest to investigate the effects of the universiy grade-free policy. The datasets were confidential, however, I have hence anonymized all the entries by hash. 
+This is repository is intended for provosts and students to visualize course enrolment datasets and compare between cohorts to gain some statistical insights. The toolkit was originally used for [my UROP side quest](https://sway.office.com/j4vQOyVl2jm3uOxv?ref=Link&loc=play) to investigate the effects of the universiy grade-free policy. The datasets were confidential, however, I have hence anonymized all the entries by hash. 
 
+For your reference, my app is publicly shared at [this address](https://jthh-module-selection-analysis-app-nlvm4c.streamlitapp.com/), thanks to Streamlit platform.
 
 ## Quick Start
 
